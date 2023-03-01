@@ -1,9 +1,12 @@
 from flask import Flask, render_template, session, request, redirect, url_for
 import sqlite3 
+from werkzeug.security import generate_password_hash, check_password_hash
+
 
 app = Flask(__name__)
 app.secret_key = b'm#HS3ZyNqPNj$sga7QJVd66d!TjT6Kzr'
-connection = sqlite3.connect("database.db")
+#connection = sqlite3.connect("database.db")
+#cursor = connection.cursor()
 
 
 @app.route('/')
@@ -16,15 +19,47 @@ def index():
 def not_found(l):
   return render_template("404.html")
 
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+
   if 'username' in session:
     return redirect(url_for('index'))
   if request.method == 'POST':
-    session['username'] = request.form['username']
-    session['password'] = request.form['password']
-    return redirect(url_for('index'))
+    username = request.form['username']
+    password = request.form['password']
+    connection = sqlite3.connect("database.db")
+    cursor = connection.cursor()
+  
+    # Refresh if account doesn't exist
+    if len(cursor.execute("SELECT username FROM auth WHERE lower(username) = ?", (username.lower(),)).fetchall()) == 0:
+      return redirect('/login?error=exist')
+      
+    
+    saved_hash = cursor.execute("SELECT password_hash FROM auth WHERE lower(username) = ?", (username.lower(),)).fetchall()[0][0]
+    saved_username = cursor.execute("SELECT username FROM auth WHERE lower(username) = ?", (username.lower(),)).fetchall()[0][0]
+    if saved_hash == password:#DO THINGS HERE
+      connection.close()
+      session['logged_in'] = True
+      session['username'] = username
+      session['password'] = password
+      # Redirect to the main page
+      return redirect('/')
+    else:
+      # Close database connection
+      connection.close()
+      # If the username and password are incorrect, redirect to the login page
+      return redirect('/login?error=invalid')
+
+    return redirect(url_for('error'))
   return render_template('login.html')
+
+
+
+
+
+
 
 @app.route('/logout')
 def logout():

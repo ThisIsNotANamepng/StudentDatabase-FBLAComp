@@ -1,0 +1,28 @@
+create table auth(username text, password_hash text);
+insert into auth values('admin','6b3a55e0261b0304143f805a24924d0c1c44524821305f31d9277843b8a10f4e');
+insert into auth values('viewer','6b3a55e0261b0304143f805a24924d0c1c44524821305f31d9277843b8a10f4e');
+insert into auth values('uploader','6b3a55e0261b0304143f805a24924d0c1c44524821305f31d9277843b8a10f4e');
+select * from auth;
+
+
+create table IDs(name text, ID int);
+insert into IDs values('Jack Hagen','56599');
+
+
+create table EventList(event text, type text);
+insert into EventList values('2-22-2023-1','sport');
+insert into EventList values('3-21-2023-1','sport');
+insert into EventList values('3-21-2023-2','rally');
+insert into EventList values('3-22-2023-1','other');
+
+
+create table '2-22-2023-1'(ID int);
+insert into '2-22-2023-1' values(56599);
+
+create table '3-21-2023-1'(ID int);
+insert into '3-21-2023-1' values(56599);
+
+create table '3-21-2023-2'(ID int);
+insert into '3-21-2023-2' values(56599);
+
+insert into auth values('test','pass');
