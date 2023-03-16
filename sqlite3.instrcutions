@@ -1,7 +1,8 @@
-create table auth(username text, password_hash text);
-insert into auth values('admin','6b3a55e0261b0304143f805a24924d0c1c44524821305f31d9277843b8a10f4e');
-insert into auth values('viewer','6b3a55e0261b0304143f805a24924d0c1c44524821305f31d9277843b8a10f4e');
-insert into auth values('uploader','6b3a55e0261b0304143f805a24924d0c1c44524821305f31d9277843b8a10f4e');
+create table auth(username text, hash text, type text);
+insert into auth values('it@oasd.org','pass','admin');
+insert into auth values('principle@oasd.org','pass','viewer');
+insert into auth values('computer10','pass','uploader');
+
 select * from auth;
 
 
@@ -25,4 +26,3 @@ insert into '3-21-2023-1' values(56599);
 create table '3-21-2023-2'(ID int);
 insert into '3-21-2023-2' values(56599);
 
-insert into auth values('test','pass');
