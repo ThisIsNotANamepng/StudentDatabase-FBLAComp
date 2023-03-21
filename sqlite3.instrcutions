@@ -6,8 +6,12 @@ insert into auth values('computer10','pass','uploader');
 select * from auth;
 
 
-create table IDs(name text, ID int);
+create table IDs(name text, ID text);
 insert into IDs values('Jack Hagen','56599');
+insert into IDs values('Fake Name','12345');
+insert into IDs values('Vladmir Drawattentiontomyself','09876');
+insert into IDs values('Laseloe Whitacre','11111');
+
 
 
 create table EventList(event text, type text);
@@ -26,3 +30,5 @@ insert into '3-21-2023-1' values(56599);
 create table '3-21-2023-2'(ID int);
 insert into '3-21-2023-2' values(56599);
 
+create table 'active_event'(active_event text);
+insert into 'active_event' values('2-22-2023-1');

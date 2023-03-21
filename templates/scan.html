@@ -1,9 +1,47 @@
 <!DOCTYPE html>
 <html>
-<body>
+    <head>
+      <!--In the furture downlaod the js and css files to host on the server for increased privacy and security, for now just use cdn-->
+      <title>Scan</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.16.3/dist/css/uikit.min.css" />
+      <script src="https://cdn.jsdelivr.net/npm/uikit@3.16.3/dist/js/uikit.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/uikit@3.16.3/dist/js/uikit-icons.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js"></script>
+        
+    </head>
+    <body>
 
-<h1>Scanner page</h1>
-<p>Scan id's here</p>
+      <a class="uk-position-top-right uk-button uk-button-primary" href="/logout">Log out</a>
+      <div class="uk-container uk-position-center">
+        <div class="uk-container uk-text-center"><h1 class="uk-align-center">Scan</h1></div>
+        <!--<h3>I need a color pallette</h3>-->
+        <div class="uk-container">
+          <form>
+            <div class="uk-margin">
 
-</body>
-</html> 
+
+              <form action="" method = "POST">
+                <input id="scanbox" class="uk-input" name="id" type="id" placeholder="Scan ID Here" aria-label="Input" autofocus/>
+              </form>
+              <script>
+                document.querySelector("#scanbox").addEventListener("keypress", function (e) {
+                    if (event.key === "Enter") {
+                      //https://stackoverflow.com/questions/62075431/flask-post-request-form-data-without-refreshing-page
+                      party.confetti(this);
+                    }
+                });
+                party.confetti(runButton, {
+                	spread: party.variation.range(400),
+                	count: party.variation.range(200, 300),
+                	speed: party.variation.range(200, 400),
+                	
+                });
+              </script>
+            </div>
+          </form>
+        </div>
+      </div>
+    </body>
+</html>
