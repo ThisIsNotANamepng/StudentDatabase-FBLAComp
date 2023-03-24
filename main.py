@@ -113,6 +113,15 @@ def admin():
     return redirect(url_for('upload'))
   return render_template('admin.html')
   
+@app.route('/events')
+def events():
+  
+  if (session['type'] == "uploader"):
+    return redirect(url_for('upload'))
+  print("Get a list of past events, choose an active event, create a new event")
+
+  return render_template('events.html')
+
 
 @app.route('/report')
 def view():
