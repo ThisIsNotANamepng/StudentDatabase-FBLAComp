@@ -1,9 +1,13 @@
 from flask import Flask, render_template, session, request, redirect, url_for
 import sqlite3 
 from werkzeug.security import generate_password_hash, check_password_hash
+import plotly.express as px
 
 # We need a utility for uploading an existing student name to id database for use?
 #https://dash.plotly.com/
+
+#  python3.11 -m venv fbla
+#  source env/bin/activate
 app = Flask(__name__)
 app.secret_key = b'm#HS3ZyNqPNj$sga7QJVd66d!TjT6Kzr'
 
@@ -109,12 +113,16 @@ def admin():
     return redirect(url_for('upload'))
   return render_template('admin.html')
   
+
 @app.route('/report')
 def view():
 
   print(session)
   if (session['type'] == "uploader"):
     return redirect(url_for('upload'))
+
+  fig = px.bar(x=["a", "b", "c"], y=[1, 3, 2])
+  fig.write_html('templates/view.html')
 
 
 
@@ -173,6 +181,7 @@ def upload():
 
     if id in id_list and id not in event_list:
       print("============Entering ID=============")
+      #Need to add names as well as IDs, error?
       cursor.execute("insert into '"+active_event()+"' values(?);", (id,))
 
       print("=====Selecting all=====")
@@ -207,6 +216,6 @@ def logout():
 
 
 
-app.run(host='0.0.0.0', port=81)
+app.run(host='0.0.0.0', port=5001)
 
 

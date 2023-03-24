@@ -66,6 +66,28 @@ optional = false
 python-versions = ">=3.7"
 
 [[package]]
+name = "plotly"
+version = "5.13.1"
+description = "An open-source, interactive data visualization library for Python"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+tenacity = ">=6.2.0"
+
+[[package]]
+name = "tenacity"
+version = "8.2.2"
+description = "Retry code until it succeeds"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.extras]
+doc = ["reno", "sphinx", "tornado (>=4.5)"]
+
+[[package]]
 name = "werkzeug"
 version = "2.2.2"
 description = "The comprehensive WSGI web application library."
@@ -82,7 +104,7 @@ watchdog = ["watchdog"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "61c7943ff9f9922433780cd3ac588e35905564ec8f2273ea4b6b08f6a565fb97"
+content-hash = "c12a8ef0862d1b8688e11ba90b76d4f07f8d12f8d125344a8ae7c272b1cfbe2d"
 
 [metadata.files]
 click = []
@@ -91,4 +113,6 @@ flask = []
 itsdangerous = []
 jinja2 = []
 markupsafe = []
+plotly = []
+tenacity = []
 werkzeug = []
