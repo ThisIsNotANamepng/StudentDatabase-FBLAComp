@@ -2,6 +2,8 @@ from flask import Flask, render_template, session, request, redirect, url_for
 import sqlite3 
 from werkzeug.security import generate_password_hash, check_password_hash
 import plotly.express as px
+import plotly.graph_objs as go
+import plotly.offline as pyo
 
 # We need a utility for uploading an existing student name to id database for use?
 #https://dash.plotly.com/
@@ -130,11 +132,25 @@ def view():
   if (session['type'] == "uploader"):
     return redirect(url_for('upload'))
 
+  """
+  #x=events, y=number in attendance
   fig = px.bar(x=["a", "b", "c"], y=[1, 3, 2])
   fig.write_html('templates/view.html')
+  """
 
+  conn = sqlite3.connect('database.db')
 
+  cursor = conn.execute("SELECT * FROM '2-22-2023-1';")
 
+  data = cursor.fetchall()
+  x_data = [row[0] for row in data]
+
+  # Plot the data using Plotly
+  trace = go.Scatter(x=x_data, y=y_data, mode='markers')
+  data = [trace]
+  layout = go.Layout(title='My Plot')
+  fig = go.Figure(data=data, layout=layout)
+  pyo.plot(fig, filename='templates/view.html')
     
   return render_template('view.html')
 

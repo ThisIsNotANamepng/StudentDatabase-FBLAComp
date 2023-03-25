@@ -8,24 +8,34 @@ select * from auth;
 
 create table IDs(name text, ID text);
 insert into IDs values('Jack Hagen','56599');
-insert into IDs values('Fake Name','12345');
-insert into IDs values('Vladmir Drawattentiontomyself','09876');
-insert into IDs values('Laseloe Whitacre','11111');
+insert into IDs values('Fake Name','1');
+insert into IDs values('Vladmir Drawattentiontomyself','2');
+insert into IDs values('Laseloe Whitacre','3');
 
 
 
-create table EventList(event text, type text);
-insert into EventList values('2-22-2023-1','sport');
-insert into EventList values('3-21-2023-1','sport');
-insert into EventList values('3-21-2023-2','rally');
-insert into EventList values('3-22-2023-1','other');
+create table event_list(event text, type text);
+insert into event_list values('2-22-2023-1','sport');
+insert into event_list values('3-21-2023-1','sport');
+insert into event_list values('3-21-2023-2','rally');
+insert into event_list values('3-22-2023-1','other');
 
 
 create table '2-22-2023-1'(ID int);
 insert into '2-22-2023-1' values(56599);
+insert into '2-22-2023-1' values(1);
+insert into '2-22-2023-1' values(2);
+insert into '2-22-2023-1' values(3);
+insert into '2-22-2023-1' values(4);
+insert into '2-22-2023-1' values(5);
+insert into '2-22-2023-1' values(6);
 
 create table '3-21-2023-1'(ID int);
 insert into '3-21-2023-1' values(56599);
+insert into '3-22-2023-1' values(2);
+insert into '3-22-2023-1' values(3);
+insert into '3-22-2023-1' values(1);
+insert into '3-22-2023-1' values(4);
 
 create table '3-21-2023-2'(ID int);
 insert into '3-21-2023-2' values(56599);
