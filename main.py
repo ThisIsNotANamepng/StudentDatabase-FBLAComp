@@ -1,9 +1,7 @@
 from flask import Flask, render_template, session, request, redirect, url_for
 import sqlite3 
 from werkzeug.security import generate_password_hash, check_password_hash
-import plotly.express as px
-import plotly.graph_objs as go
-import plotly.offline as pyo
+import random
 
 # We need a utility for uploading an existing student name to id database for use?
 #https://dash.plotly.com/
@@ -20,8 +18,63 @@ def active_event():
   thing = (cursor.execute("SELECT active_event FROM active_event").fetchall())[0][0]
   connection.close()
   return (thing)
-  
-    
+def num_events():
+  connection = sqlite3.connect("database.db")
+  cursor = connection.cursor()
+  a=(cursor.execute("SELECT COUNT(event) FROM event_list").fetchone()[0])
+  connection.close()
+  return(a)
+def top_earner():
+  connection = sqlite3.connect("database.db")
+  cursor = connection.cursor()
+  a=(cursor.execute("SELECT * FROM IDs WHERE points = (SELECT MAX(points) FROM IDs LIMIT 3)").fetchone())
+  connection.close()
+  return(a)
+def top_three_earners():
+  connection = sqlite3.connect("database.db")
+  cursor = connection.cursor()
+
+  a=(cursor.execute("SELECT * FROM IDs ORDER BY points DESC LIMIT 3").fetchall())
+  connection.close()
+  return(a)
+def random_winner():
+  connection = sqlite3.connect("database.db")
+  cursor = connection.cursor()
+  a=(cursor.execute("SELECT * FROM IDs ORDER BY RANDOM() LIMIT 3 OFFSET 0").fetchone())
+  connection.close()
+  return(a)
+def list_events():
+  connection = sqlite3.connect("database.db")
+  cursor = connection.cursor()
+  a=(cursor.execute("SELECT event FROM event_list").fetchall())
+  connection.close()
+  i=0
+  while (i<len(a)):
+    a[i]=a[i][0]
+    i+=1
+  return(a)
+def count_events():
+  connection = sqlite3.connect("database.db")
+  cursor = connection.cursor()
+  events = list_events()
+  counts = []
+  for i in events:
+    a=(cursor.execute("SELECT ID FROM '"+i+"'").fetchall())
+    counts.append(len(a))
+  connection.close()
+  return(counts)
+def num_students():
+  connection = sqlite3.connect("database.db")
+  cursor = connection.cursor()
+  a=(cursor.execute("SELECT number_of_students FROM school_details;").fetchone())
+  connection.close()
+  return(a[0])
+
+print("======")
+print(list_events())
+print(count_events())
+print(num_students())
+print("======")
 
 
 @app.route('/')
@@ -128,31 +181,39 @@ def events():
 @app.route('/report')
 def view():
 
+  
+  population_event=active_event()
+  
+  
+  if request.method == 'POST':
+    population_event = request.form['event']
+    print(population_event)
+
+  
   print(session)
   if (session['type'] == "uploader"):
     return redirect(url_for('upload'))
+  
+  
+  top_earners_names = [top_three_earners()[0][0], top_three_earners()[1][0], top_three_earners()[2][0]]
+  top_earners_points = [top_three_earners()[0][3], top_three_earners()[1][3], top_three_earners()[2][3]]
+  population_total = num_students()
+  
 
-  """
-  #x=events, y=number in attendance
-  fig = px.bar(x=["a", "b", "c"], y=[1, 3, 2])
-  fig.write_html('templates/view.html')
-  """
+  
+  print("count_events: "+str(count_events()))
+  attendance = count_events()[list_events().index(population_event)]
+  print(attendance)
+  remaining = num_students()-attendance
 
-  conn = sqlite3.connect('database.db')
 
-  cursor = conn.execute("SELECT * FROM '2-22-2023-1';")
 
-  data = cursor.fetchall()
-  x_data = [row[0] for row in data]
 
-  # Plot the data using Plotly
-  trace = go.Scatter(x=x_data, y=y_data, mode='markers')
-  data = [trace]
-  layout = go.Layout(title='My Plot')
-  fig = go.Figure(data=data, layout=layout)
-  pyo.plot(fig, filename='templates/view.html')
-    
-  return render_template('view.html')
+
+  
+  return render_template('view.html', top_earners_x=top_earners_names, top_earners_y=top_earners_points, attendance_x=[attendance, remaining])
+  
+  
 
 
 
@@ -241,6 +302,6 @@ def logout():
 
 
 
-app.run(host='0.0.0.0', port=5001)
+app.run(host='0.0.0.0', port=5002)
 
 

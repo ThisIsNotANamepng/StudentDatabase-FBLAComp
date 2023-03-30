@@ -6,22 +6,23 @@ insert into auth values('computer10','pass','uploader');
 select * from auth;
 
 
-create table IDs(name text, ID text);
-insert into IDs values('Jack Hagen','56599');
-insert into IDs values('Fake Name','1');
-insert into IDs values('Vladmir Drawattentiontomyself','2');
-insert into IDs values('Laseloe Whitacre','3');
+create table IDs(name text, ID text, grade text, points integer);
+insert into IDs values('Jack Hagen','56599', '12', 40);
+insert into IDs values('Fake Name','1', '11', 5);
+insert into IDs values('Vladmir Drawattentiontomyself','2', '10', 8);
+insert into IDs values('Laseloe Whitacre','3', '9', 0);
+insert into IDs values('Other Max', '7', '12', '40');
 
 
 
-create table event_list(event text, type text);
-insert into event_list values('2-22-2023-1','sport');
-insert into event_list values('3-21-2023-1','sport');
-insert into event_list values('3-21-2023-2','rally');
-insert into event_list values('3-22-2023-1','other');
+create table event_list(event text, type text, name text);
+insert into event_list values('2-22-2023-1','sport', 'Away game');
+insert into event_list values('3-22-2023-1','sport', 'Football March 21st v Arrowhead');
+insert into event_list values('3-22-2023-2','rally', 'March 21 Game Pep Rally');
+insert into event_list values('4-1-2023-1','other', 'Into The Woods Opening Night');
 
 
-create table '2-22-2023-1'(ID int);
+create table '2-22-2023-1'(ID text);
 insert into '2-22-2023-1' values(56599);
 insert into '2-22-2023-1' values(1);
 insert into '2-22-2023-1' values(2);
@@ -30,15 +31,21 @@ insert into '2-22-2023-1' values(4);
 insert into '2-22-2023-1' values(5);
 insert into '2-22-2023-1' values(6);
 
-create table '3-21-2023-1'(ID int);
-insert into '3-21-2023-1' values(56599);
+create table '3-22-2023-1'(ID text);
+insert into '3-22-2023-1' values(56599);
 insert into '3-22-2023-1' values(2);
 insert into '3-22-2023-1' values(3);
 insert into '3-22-2023-1' values(1);
 insert into '3-22-2023-1' values(4);
 
-create table '3-21-2023-2'(ID int);
-insert into '3-21-2023-2' values(56599);
+create table '3-22-2023-2'(ID text);
+insert into '3-22-2023-2' values(56599);
+
+create table '4-1-2023-1'(ID text);
+insert into '4-1-2023-1' values(56599);
 
 create table 'active_event'(active_event text);
 insert into 'active_event' values('2-22-2023-1');
+
+create table 'school_details'(number_of_students integer);
+insert into 'school_details' values(10);
