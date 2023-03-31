@@ -2,6 +2,7 @@ from flask import Flask, render_template, session, request, redirect, url_for
 import sqlite3 
 from werkzeug.security import generate_password_hash, check_password_hash
 import random
+import itertools
 
 # We need a utility for uploading an existing student name to id database for use?
 #https://dash.plotly.com/
@@ -69,6 +70,17 @@ def num_students():
   a=(cursor.execute("SELECT number_of_students FROM school_details;").fetchone())
   connection.close()
   return(a[0])
+def list_event_names():
+  connection = sqlite3.connect("database.db")
+  cursor = connection.cursor()
+  a=(cursor.execute("SELECT name FROM event_list").fetchall())
+  connection.close()
+  i=0
+  while (i<len(a)):
+    a[i]=a[i][0]
+    i+=1
+  return(a)
+
 
 print("======")
 print(list_events())
@@ -180,7 +192,6 @@ def events():
 
 @app.route('/report')
 def view():
-
   
   population_event=active_event()
   
@@ -190,32 +201,30 @@ def view():
     print(population_event)
 
   
-  print(session)
   if (session['type'] == "uploader"):
     return redirect(url_for('upload'))
   
   
   top_earners_names = [top_three_earners()[0][0], top_three_earners()[1][0], top_three_earners()[2][0]]
   top_earners_points = [top_three_earners()[0][3], top_three_earners()[1][3], top_three_earners()[2][3]]
-  population_total = num_students()
-  
-
-  
-  print("count_events: "+str(count_events()))
   attendance = count_events()[list_events().index(population_event)]
-  print(attendance)
   remaining = num_students()-attendance
 
-
-
-
-
-  
-  return render_template('view.html', top_earners_x=top_earners_names, top_earners_y=top_earners_points, attendance_x=[attendance, remaining])
-  
+  events = (list_events())
+  names = (list_event_names())
+  #Need a list of event namess
   
 
-
+  
+  
+  return render_template('view.html', top_earners_x=top_earners_names, top_earners_y=top_earners_points, attendance_x=[attendance, remaining], events=zip(events, names))
+  
+  """
+  <option value="volvo">Volvo</option>
+  <option value="saab">Saab</option>
+  <option value="mercedes">Mercedes</option>
+  <option value="audi">Audi</option>
+  """
 
   
 

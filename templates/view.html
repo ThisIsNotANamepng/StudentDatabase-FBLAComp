@@ -10,6 +10,12 @@
     <br><br><br><br><br>
     <canvas id="event_attendance" width="800" height="450"></canvas>
 
+    <select name="event" id="event">
+        {% for event, name in events %}
+        <option value= "{{event}}" SELECTED>{{name}}</option>"
+        {% endfor %}
+    </select> 
+
     <script>
         //Top Three Earners
         new Chart(document.getElementById("top-earners"), {
