@@ -9,12 +9,44 @@
     <canvas id="top-earners" width="800" height="450"></canvas>
     <br><br><br><br><br>
     <canvas id="event_attendance" width="800" height="450"></canvas>
+    <br><br><br><br><br>
+    <canvas id="type_bar" width="800" height="450"></canvas>
+    <br><br><br><br><br>
+    <canvas id="events_list" width="800" height="450"></canvas>
+    <br><br><br><br><br>
+    <canvas id="percentage_types" width="800" height="450"></canvas>
 
-    <select name="event" id="event">
-        {% for event, name in events %}
-        <option value= "{{event}}" SELECTED>{{name}}</option>"
-        {% endfor %}
-    </select> 
+
+ 
+
+    <form method="post">
+        <select name="type" id="type" onchange='if(this.value != 0) { this.form.submit(); }'>
+
+            {% for type in types %}
+            {% if type == active_type %}
+            <option value= "{{type}}" SELECTED>{{type}}</option>
+            {% else %}
+            <option value= "{{type}}">{{type}}</option>
+            {% endif %}
+            {% endfor %}
+        </select> 
+    </form>
+
+    
+    <form method="post">
+        <select name="event" id="event" onchange='if(this.value != 0) { this.form.submit(); }'>
+
+            {% for event, name in events %}
+            {% if event == population_event %}
+            <option value= "{{event}}" SELECTED>{{name}}</option>
+            {% else %}
+            <option value= "{{event}}">{{name}}</option>
+            {% endif %}
+            {% endfor %}
+        </select> 
+    </form>
+
+
 
     <script>
         //Top Three Earners
@@ -61,9 +93,93 @@
         });
 
 
+        //Bar chart with dropdown for events of a type
+        new Chart(document.getElementById("type_bar"), {
+            type: 'bar',
+            data: {
+            labels: {{ events_type_x|tojson }},
+            datasets: [
+                {
+                label: "Attendance",
+                backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f"],
+                data: {{ events_type_y|tojson }},
+                },
 
+            ]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                },
+                legend: { display: true },
+                title: {
+                    display: true,
+                    text: 'Attendance by Type'
+                }
+            }
+        });
 
+        new Chart(document.getElementById("events_list"), {
+            type: 'bar',
+            data: {
+            labels: {{ events_x|tojson }},
+            datasets: [
+                {
+                label: "Points",
+                backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f"],
+                data: {{ events_y|tojson }},
+                },
 
+            ]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                },
+                legend: { display: true },
+                title: {
+                    display: true,
+                    text: 'Attendance'
+                }
+            }
+        });
+
+        new Chart(document.getElementById("percentage_types"), {
+            type: 'bar',
+            data: {
+            labels: {{ percentage_types_x|tojson }},
+            datasets: [
+                {
+                label: "Points",
+                backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f"],
+                data: {{ percentage_types_y|tojson }},
+                },
+
+            ]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                },
+                legend: { display: true },
+                title: {
+                    display: true,
+                    text: 'Attendance'
+                }
+            }
+        });
     </script>    
 
 </body>
