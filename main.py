@@ -5,33 +5,48 @@ import random
 import itertools
 
 # We need a utility for uploading an existing student name to id database for use?
-#https://dash.plotly.com/
 
 #  python3.11 -m venv fbla
 #  source env/bin/activate
 app = Flask(__name__)
 app.secret_key = b'm#HS3ZyNqPNj$sga7QJVd66d!TjT6Kzr'
 
+def change_active_event(new_event):
+  new_event="'"+new_event+"'"
+  print(new_event)
+  #Changes the current events that the scanner page enters into
+  connection = sqlite3.connect("database.db")
+  cursor = connection.cursor()
 
+  cursor.execute("DELETE FROM active_event WHERE del = 1;")
+  cursor.execute(("INSERT INTO active_event(active_event,del) VALUES(?,1);"), (new_event,))
+
+  connection.commit()
+  connection.close()
+  return ("Active event replaced")
 def active_event():
+  #Returns the current events that the scanner page enters into
   connection = sqlite3.connect("database.db")
   cursor = connection.cursor()
   thing = (cursor.execute("SELECT active_event FROM active_event").fetchall())[0][0]
   connection.close()
   return (thing)
 def num_events():
+  #Returns the number of events
   connection = sqlite3.connect("database.db")
   cursor = connection.cursor()
   a=(cursor.execute("SELECT COUNT(event) FROM event_list").fetchone()[0])
   connection.close()
   return(a)
 def top_earner():
+  #Returns the student with the most points
   connection = sqlite3.connect("database.db")
   cursor = connection.cursor()
   a=(cursor.execute("SELECT * FROM IDs WHERE points = (SELECT MAX(points) FROM IDs LIMIT 3)").fetchone())
   connection.close()
   return(a)
 def top_three_earners():
+  #Returns the top three earners
   connection = sqlite3.connect("database.db")
   cursor = connection.cursor()
 
@@ -39,12 +54,14 @@ def top_three_earners():
   connection.close()
   return(a)
 def random_winner():
+  #Returns a random student in the ID table
   connection = sqlite3.connect("database.db")
   cursor = connection.cursor()
   a=(cursor.execute("SELECT * FROM IDs ORDER BY RANDOM() LIMIT 3 OFFSET 0").fetchone())
   connection.close()
   return(a)
 def list_events():
+  #Returns a list of all events
   connection = sqlite3.connect("database.db")
   cursor = connection.cursor()
   a=(cursor.execute("SELECT event FROM event_list").fetchall())
@@ -55,6 +72,7 @@ def list_events():
     i+=1
   return(a)
 def count_events():
+  #Returns a list of attendance for each event
   connection = sqlite3.connect("database.db")
   cursor = connection.cursor()
   events = list_events()
@@ -65,12 +83,14 @@ def count_events():
   connection.close()
   return(counts)
 def num_students():
+  #Returns the number of students from school_details
   connection = sqlite3.connect("database.db")
   cursor = connection.cursor()
   a=(cursor.execute("SELECT number_of_students FROM school_details;").fetchone())
   connection.close()
   return(a[0])
 def list_event_names():
+  #Returns a list of event names
   connection = sqlite3.connect("database.db")
   cursor = connection.cursor()
   a=(cursor.execute("SELECT name FROM event_list").fetchall())
@@ -80,15 +100,94 @@ def list_event_names():
     a[i]=a[i][0]
     i+=1
   return(a)
+def type_attendance(type):
+  #Returns a list of attendance for a type
+  connection = sqlite3.connect("database.db")
+  cursor = connection.cursor()
+  #print("All counts for events for type :"+type)
+
+  type=type.lower()
+  a=(cursor.execute("SELECT event FROM event_list WHERE type = ?", (type,)).fetchall())
 
 
-print("======")
-print(list_events())
-print(count_events())
-print(num_students())
-print("======")
+  i=0
+  while (i<len(a)):
+    a[i]=a[i][0]
+    i+=1
+
+  counts=[]
+  for i in a:
+    counts.append(cursor.execute("SELECT COUNT(ID) FROM '"+i+"' ;").fetchone()[0])
+
+  connection.close()
+
+  return(counts)
+def total_type_attendance(type):
+  #Returns a list of attendance for a type
+  connection = sqlite3.connect("database.db")
+  cursor = connection.cursor()
+  #print("All counts for events for type :"+type)
+
+  type=type.lower()
+  a=(cursor.execute("SELECT event FROM event_list WHERE type = ?", (type,)).fetchall())
 
 
+  i=0
+  while (i<len(a)):
+    a[i]=a[i][0]
+    i+=1
+
+  counts=0
+  for i in a:
+    counts+=(cursor.execute("SELECT COUNT(ID) FROM '"+i+"' ;").fetchone()[0])
+
+  connection.close()
+
+  return(counts)
+def average_type_attendance(type):
+  #Returns a list of attendance for a type
+  connection = sqlite3.connect("database.db")
+  cursor = connection.cursor()
+  #print("All counts for events for type :"+type)
+
+  type=type.lower()
+  a=(cursor.execute("SELECT event FROM event_list WHERE type = ?", (type,)).fetchall())
+  if a==[]:
+    return(0)
+
+
+  v=0
+  while (v<len(a)):
+    a[v]=a[v][0]
+    v+=1
+
+  counts=0
+  for i in a:
+    counts+=(cursor.execute("SELECT COUNT(ID) FROM '"+i+"' ;").fetchone()[0])
+
+  connection.close()
+
+  return(counts/v)
+def types_events(type):
+  #Returns a list of events which are a type
+  connection = sqlite3.connect("database.db")
+  cursor = connection.cursor()
+  #print("All counts for events for type :"+type)
+
+  type=type.lower()
+
+  a=(cursor.execute("SELECT event FROM event_list WHERE type = ?", (type,)).fetchall())
+
+
+  i=0
+  while (i<len(a)):
+    a[i]=a[i][0]
+    i+=1
+  connection.close()
+
+  return(a)
+
+change_active_event('3-22-2023-1')
 @app.route('/')
 def index():
   """
@@ -190,45 +289,58 @@ def events():
   return render_template('events.html')
 
 
-@app.route('/report')
+@app.route('/report', methods=['GET', 'POST'])
 def view():
-  
-  population_event=active_event()
-  
-  
-  if request.method == 'POST':
-    population_event = request.form['event']
-    print(population_event)
+  global population_event
+  global active_type
+  total = num_students()
 
   
   if (session['type'] == "uploader"):
     return redirect(url_for('upload'))
   
+
+  population_event=active_event()
+  active_type="rally"
+  
+  
+  if request.method == 'POST':
+    if 'event' in request.form:
+      population_event = request.form['event']
+    if 'type' in request.form:
+      active_type = request.form['type']
+
   
   top_earners_names = [top_three_earners()[0][0], top_three_earners()[1][0], top_three_earners()[2][0]]
   top_earners_points = [top_three_earners()[0][3], top_three_earners()[1][3], top_three_earners()[2][3]]
   attendance = count_events()[list_events().index(population_event)]
-  remaining = num_students()-attendance
+  remaining = total-attendance
+
+  #type_attendance = type_attendance()
 
   events = (list_events())
   names = (list_event_names())
-  #Need a list of event namess
-  
+  types = ["Sport", "Rally", "Musical", "Theatre", "Other"]
+
+
+
+  #Bar chart with types of events %wise
+  percentage_types=[]
+  for i in types:
+    percentage_types.append(average_type_attendance(i)/total)
+
+
 
   
-  
-  return render_template('view.html', top_earners_x=top_earners_names, top_earners_y=top_earners_points, attendance_x=[attendance, remaining], events=zip(events, names))
-  
-  """
-  <option value="volvo">Volvo</option>
-  <option value="saab">Saab</option>
-  <option value="mercedes">Mercedes</option>
-  <option value="audi">Audi</option>
-  """
+  #Radar chart with types of events vs different grades
+
 
   
+  return render_template('view.html', top_earners_x=top_earners_names, top_earners_y=top_earners_points, attendance_x=[attendance, remaining], events=zip(events, names), population_event=population_event, types=types, active_type=active_type, events_type_x=types_events(active_type), events_type_y=type_attendance(active_type), events_x=list_event_names(), events_y=count_events(), percentage_types_x=types, percentage_types_y=percentage_types)
 
-@app.route('/scan', methods=['GET'])
+
+
+@app.route('/scan', methods=['GET', 'POST'])
 def upload():
 
   if 'username' not in session:
@@ -237,6 +349,7 @@ def upload():
     return redirect(url_for('view'))
 
   id = request.args.get('id')
+
   print(id)
   if id!= "None":
 
