@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+
+<h1>Winners</h1>
+
+<style>
+    table, th, td {
+      border:1px solid black;
+    }
+</style>
+
+<form method="post" action="/winners">
+    <input type="submit" value="generate_student" name="generate_student"/>
+</form>
+<form method="post" action="/winners">
+    <input type="submit" value="generate_students" name="generate_students"/>
+</form>
+{% if single_winner != "" %}
+    <h2>Winner: {{ single_winner[0] }}, in grade {{ single_winner[2] }}</h2>
+{% elif all_winners != "" %}
+    <h2>Winners</h2>
+    <ul>
+        <li>Twelfth grade: all_winners[3][0]</li>
+        <li>Eleventh grade: all_winners[2][0]</li>
+        <li>Tenth grade: all_winners[1][0]</li>
+        <li>Ninth grade: all_winners[0][0]</li>
+
+    </ul>
+    <h2>Winners: {{ single_winner[0] }}, in grade {{ single_winner[2] }}</h2>
+{% endif %}
+
+
+{% block content %}
+    <h1>Search Results</h1>
+    {% if results %}
+    <ul><table style="width:100%"><tr><td>Name</td><td>Grade</td><td>Points</td></tr>
+        {% for row in results %}
+        <tr><td>{{row[0]}}</td><td>{{row[2]}}</td><td>{{row[3]}}</td></tr>
+        {% endfor %}
+    </table></ul>
+    {% elif results==""%}
+    <p></p>
+    {% else %}
+    <p>No results found.</p>
+    {% endif %}
+{% endblock %}
+
+<form method="POST" action="{{ url_for('winner') }}">
+    <input type="text" name="query" placeholder="Search...">
+    <button type="submit">Search</button>
+</form>
+  
+
+
+
+</body>
+</html>

@@ -3,7 +3,6 @@ insert into auth values('it@oasd.org','pass','admin');
 insert into auth values('principle@oasd.org','pass','viewer');
 insert into auth values('computer10','pass','uploader');
 
-select * from auth;
 
 
 create table IDs(name text, ID text, grade text, points integer);

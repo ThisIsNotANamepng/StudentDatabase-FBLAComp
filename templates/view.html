@@ -4,8 +4,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 </head>
 <body>
-    <h1>{{x}}</h1>
-    <h2>{{z}}</h2>
+    <h1>{{grades}}</h1>
+    <h2>{{active_grade}}</h2>
+    <h2>{{grades}}</h2>
+
     <canvas id="top-earners" width="800" height="450"></canvas>
     <br><br><br><br><br>
     <canvas id="event_attendance" width="800" height="450"></canvas>
@@ -14,10 +16,27 @@
     <br><br><br><br><br>
     <canvas id="events_list" width="800" height="450"></canvas>
     <br><br><br><br><br>
+    <canvas id="grade_events_list" width="800" height="450"></canvas>
+    <br><br><br><br><br>
     <canvas id="percentage_types" width="800" height="450"></canvas>
+    <br><br><br><br><br>
+    <canvas id="grade_points" width="800" height="450"></canvas>
+    <br><br><br><br><br>
+    <canvas id="student_list" width="800" height="450"></canvas>
 
 
- 
+    <form method="post">
+        <select name="grade" id="grade" onchange='if(this.value != 0) { this.form.submit(); }'>
+
+            {% for grade in grades %}
+            {% if grade == active_grade %}
+            <option value= "{{grade}}" SELECTED>{{grade}}</option>
+            {% else %}
+            <option value= "{{grade}}">{{grade}}</option>
+            {% endif %}
+            {% endfor %}
+        </select> 
+    </form>
 
     <form method="post">
         <select name="type" id="type" onchange='if(this.value != 0) { this.form.submit(); }'>
@@ -177,6 +196,114 @@
                 title: {
                     display: true,
                     text: 'Attendance'
+                }
+            }
+        });
+
+        new Chart(document.getElementById("grade_events_list"), {
+            type: 'bar',
+            data: {
+            labels: {{ grade_events_list_x|tojson }},
+            datasets: [
+                {
+                label: "Points",
+                backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f"],
+                data: {{ grade_events_list_y|tojson }},
+                },
+
+            ]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                },
+                legend: { display: true },
+                title: {
+                    display: true,
+                    text: {{ grade_events_list_grade|tojson }}
+                }
+            }
+        });
+
+
+        new Chart(document.getElementById("grade_points"), {
+            type: 'bar',
+            data: {
+            labels: {{ grades|tojson }},
+            datasets: [
+                {
+                label: "Points",
+                backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f"],
+                data: {{ grade_points_y|tojson }},
+                },
+
+            ]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                },
+                legend: { display: true },
+                title: {
+                    display: true,
+                    text: "Total points for each grade"
+                }
+            }
+        });
+
+
+        //Pie Chart of points per grade
+        new Chart(document.getElementById("grade_points"), {
+            type: 'pie',
+            data: {
+            labels: ["9", "10", "11", "12"],
+            datasets: [{
+                label: "Student Attendance",
+                backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+                data: {{ grade_points_data|tojson }}
+            }]
+            },
+            options: {
+            title: {
+                display: true,
+                text: 'Points by Grade '
+            }
+            }
+        });
+
+        new Chart(document.getElementById("student_list"), {
+            type: 'bar',
+            data: {
+            labels: {{ student_names|tojson }},
+            datasets: [
+                {
+                label: "Points",
+                backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f"],
+                data: {{ student_points|tojson }},
+                },
+
+            ]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                },
+                legend: { display: true },
+                title: {
+                    display: true,
+                    text: "List of all students and their points"
                 }
             }
         });
