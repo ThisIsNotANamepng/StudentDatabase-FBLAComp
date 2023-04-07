@@ -53,7 +53,7 @@ def top_three_earners():
   a=(cursor.execute("SELECT * FROM IDs ORDER BY points DESC LIMIT 3").fetchall())
   connection.close()
   return(a)
-def random_winner():
+def randomm_winner():
   #Returns a random student in the ID table
   connection = sqlite3.connect("database.db")
   cursor = connection.cursor()
@@ -61,6 +61,7 @@ def random_winner():
   connection.close()
   return(a)
 def list_events():
+
   #Returns a list of all events
   connection = sqlite3.connect("database.db")
   cursor = connection.cursor()
@@ -71,6 +72,26 @@ def list_events():
     a[i]=a[i][0]
     i+=1
   return(a)
+def count_events_grade(grade):
+  #Returns a list of attendance for each event according to the inputted grade
+  connection = sqlite3.connect("database.db")
+  cursor = connection.cursor()
+  events = list_events()
+  counts = []
+  for i in events:
+    count=0
+    a=(cursor.execute("SELECT ID FROM '"+i+"'").fetchall())
+    #print("a", a)
+    for i in a:
+      #i = an id
+      b=(cursor.execute("SELECT grade FROM IDs WHERE ID = ?", (i[0],)).fetchall())
+      if len(b)!=0:
+        if int(b[0][0])==grade:
+          count+=1
+    counts.append(count)
+
+  connection.close()
+  return(counts)
 def count_events():
   #Returns a list of attendance for each event
   connection = sqlite3.connect("database.db")
@@ -186,32 +207,88 @@ def types_events(type):
   connection.close()
 
   return(a)
+def randomm_winner_each_grade():
+  #Returns a list of winners from each grade in the order of [grade9name, 9id, grade10name, 10id...
+  #Returns a random student in the ID table
+  connection = sqlite3.connect("database.db")
+  cursor = connection.cursor()
+  a=[]
+  a.append(cursor.execute("SELECT name FROM IDs WHERE grade = 9 ORDER BY RANDOM() LIMIT 1;").fetchone()[0])
+  a.append(cursor.execute("SELECT ID FROM IDs WHERE grade = 9 ORDER BY RANDOM() LIMIT 1;").fetchone()[0])
+  a.append(cursor.execute("SELECT name FROM IDs WHERE grade = 10 ORDER BY RANDOM() LIMIT 1;").fetchone()[0])
+  a.append(cursor.execute("SELECT ID FROM IDs WHERE grade = 10 ORDER BY RANDOM() LIMIT 1;").fetchone()[0])
+  a.append(cursor.execute("SELECT name FROM IDs WHERE grade = 11 ORDER BY RANDOM() LIMIT 1;").fetchone()[0])
+  a.append(cursor.execute("SELECT ID FROM IDs WHERE grade = 11 ORDER BY RANDOM() LIMIT 1;").fetchone()[0])
+  a.append(cursor.execute("SELECT name FROM IDs WHERE grade = 12 ORDER BY RANDOM() LIMIT 1;").fetchone()[0])
+  a.append(cursor.execute("SELECT ID FROM IDs WHERE grade = 12 ORDER BY RANDOM() LIMIT 1;").fetchone()[0])
 
-change_active_event('3-22-2023-1')
+
+  connection.close()
+  return(a)
+def grade_points():
+  #Returns a list of the points each grade has in the order of [9, 10, 11, 12]
+  connection = sqlite3.connect("database.db")
+  cursor = connection.cursor()
+  a=[]
+  a.append(cursor.execute("SELECT SUM(points) FROM IDs WHERE grade = 9;").fetchone()[0])
+  a.append(cursor.execute("SELECT SUM(points) FROM IDs WHERE grade=10;").fetchone()[0])
+  a.append(cursor.execute("SELECT SUM(points) FROM IDs WHERE grade=11;").fetchone()[0])
+  a.append(cursor.execute("SELECT SUM(points) FROM IDs WHERE grade=12;").fetchone()[0])
+
+  connection.close()
+  return(a)
+def student_names():
+  #Returns a list of all of the student names
+  connection = sqlite3.connect("database.db")
+  cursor = connection.cursor()
+  a=(cursor.execute("SELECT name FROM IDs").fetchall())
+  connection.close()
+  i=0
+  while (i<len(a)):
+    a[i]=a[i][0]
+    i+=1
+  return(a)
+def student_points():
+  #Returns a list of all of the student names
+  connection = sqlite3.connect("database.db")
+  cursor = connection.cursor()
+  a=(cursor.execute("SELECT points FROM IDs").fetchall())
+  connection.close()
+  i=0
+  while (i<len(a)):
+    a[i]=a[i][0]
+    i+=1
+  return(a)
+
+
+
 @app.route('/')
 def index():
-  """
-  if (session['type'] == "admin"):
-    return redirect(url_for('admin'))
-  elif (session['type'] == "viewer"):
-    return redirect(url_for('view'))
-  elif (session['type'] == "uploader"):
-    return redirect(url_for('upload'))
+  if 'type' in session:
+    if (session['type'] == "admin"):
+      return redirect(url_for('admin'))
+    elif (session['type'] == "viewer"):
+      return redirect(url_for('view'))
+    elif (session['type'] == "uploader"):
+      return redirect(url_for('upload'))
+    else:
+      return redirect(url_for('error'))
   else:
-    return redirect(url_for('error'))
-  """
-  return redirect(url_for('login'))
+    return redirect(url_for('login'))
   
-
 @app.errorhandler(404)
 def not_found(l):
   return render_template("404.html")
+  #Return to log in?
 
 @app.route('/error')
 def error():
   return("Well this is embarrassing, something went wrong internally")
   #Log this in a log where the admins can read it
 
+@app.route('/help')
+def help():
+  return(render_template('help.html'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -288,11 +365,26 @@ def events():
 
   return render_template('events.html')
 
-
 @app.route('/report', methods=['GET', 'POST'])
 def view():
+
+
+  if 'type' in session:
+    if (session['type'] == "admin"):
+      return redirect(url_for('admin'))
+    elif (session['type'] == "viewer"):
+      pass
+    elif (session['type'] == "uploader"):
+      return redirect(url_for('upload'))
+    else:
+      return redirect(url_for('error'))
+  else:
+    return redirect(url_for('login'))
+
+  
   global population_event
   global active_type
+  global active_grade
   total = num_students()
 
   
@@ -302,6 +394,8 @@ def view():
 
   population_event=active_event()
   active_type="rally"
+  active_grade=12
+  
   
   
   if request.method == 'POST':
@@ -309,10 +403,18 @@ def view():
       population_event = request.form['event']
     if 'type' in request.form:
       active_type = request.form['type']
+    if 'grade' in request.form:
+      active_grade = request.form['grade']   
+
 
   
   top_earners_names = [top_three_earners()[0][0], top_three_earners()[1][0], top_three_earners()[2][0]]
   top_earners_points = [top_three_earners()[0][3], top_three_earners()[1][3], top_three_earners()[2][3]]
+
+
+  if "'" in population_event:
+    population_event=population_event[1:-1]
+
   attendance = count_events()[list_events().index(population_event)]
   remaining = total-attendance
 
@@ -329,6 +431,8 @@ def view():
   for i in types:
     percentage_types.append(average_type_attendance(i)/total)
 
+  #Bar chart to display each event with a dropdown menu to change the grade which is displayed (by number of attendance)
+  grades=[9, 10, 11, 12]
 
 
   
@@ -336,8 +440,41 @@ def view():
 
 
   
-  return render_template('view.html', top_earners_x=top_earners_names, top_earners_y=top_earners_points, attendance_x=[attendance, remaining], events=zip(events, names), population_event=population_event, types=types, active_type=active_type, events_type_x=types_events(active_type), events_type_y=type_attendance(active_type), events_x=list_event_names(), events_y=count_events(), percentage_types_x=types, percentage_types_y=percentage_types)
+  return render_template('view.html', top_earners_x=top_earners_names, top_earners_y=top_earners_points, attendance_x=[attendance, remaining], events=zip(events, names), population_event=population_event, types=types, active_type=active_type, events_type_x=types_events(active_type), events_type_y=type_attendance(active_type), events_x=list_event_names(), events_y=count_events(), percentage_types_x=types, percentage_types_y=percentage_types, grade_events_list_x=list_event_names(), grade_events_list_y=count_events_grade(active_grade), grade_events_list_grade=active_grade, grades=grades, active_grade=active_grade, grade_points_y=grade_points(), grade_points_data=grade_points(), student_points=student_points(), student_names=student_names())
 
+@app.route('/winners', methods=['GET', 'POST'])
+def winner():
+  global student
+  global random_winner
+  global random_winner_each_grade
+
+  #The page where viewers can pick winners
+
+  #Pick a winner for each grade
+  #Search for students to get their points (and which events they attended?)
+  #Ability to add a student to an event
+  random_winner=""
+  random_winner_each_grade=""
+  results=""
+
+  if request.method == 'POST':
+    if request.form.get('generate_student') == 'generate_student':
+      # Pass the single student
+      random_winner=randomm_winner()
+    elif  request.form.get('generate_students') == 'generate_students':
+      # Pass the students
+      random_winner_each_grade=randomm_winner_each_grade()      
+
+
+  if 'query' in request.form:
+    query = request.form['query']
+    connection = sqlite3.connect("database.db")
+    cursor = connection.cursor()
+    cursor.execute('SELECT * FROM IDs WHERE name LIKE ?', ('%' + query + '%',))
+    results = cursor.fetchall()
+    connection.close()
+
+  return render_template('winners.html', results=results, single_winner=random_winner, all_winners=random_winner_each_grade)
 
 
 @app.route('/scan', methods=['GET', 'POST'])
@@ -351,65 +488,17 @@ def upload():
   id = request.args.get('id')
 
   print(id)
-  if id!= "None":
+  if id != "None":
 
     connection = sqlite3.connect("database.db")
     cursor = connection.cursor()
 
-  
-    big_list = (cursor.execute("SELECT ID FROM IDs WHERE ID = ?", (id,)).fetchall())
-    print("Big list:", big_list)
-
-    event_list = (cursor.execute("SELECT ID FROM '"+active_event()+"' WHERE ID = ?", (id,)).fetchall())
-    print("Event list:", event_list)
-    #DELETE FROM '2-22-2023-1' WHERE id='56599';
-    
-    id_list=[]
-    for i in big_list:
-      id_list.append(str(i[0]))
-
-
-
-    
-
-
-
-
-    
-    if id in id_list:
-      print("In ID list")
-    else:
-      print("Couldn't find in ID list, return error to the client")
-      
-    
-    if id in event_list:
-      print("In event list. Return 'Student already registered for this event'")
-    else:
-      print("Couldn't find in event list")
-
-    if id in id_list and id not in event_list:
-      print("============Entering ID=============")
-      #Need to add names as well as IDs, error?
-      cursor.execute("insert into '"+active_event()+"' values(?);", (id,))
-
-      print("=====Selecting all=====")
-      print(cursor.execute("select * from '2-22-2023-1';").fetchall())
-      print("insert into '"+active_event()+"' values(?);", (id,))
-
-
-      event_list = (cursor.execute("SELECT ID FROM '"+active_event()+"' WHERE ID = ?", (id,)).fetchall())
-      print(event_list)
-      print(active_event())
-
-      
-    print("====After def====")  
-    print(cursor.execute("select * from '2-22-2023-1';").fetchall())
-
+    cursor.execute("insert into "+active_event()+" values(?);", (id,))
+    cursor.execute("UPDATE IDs SET points = points + 1 WHERE id = ?;", (id,))
+    connection.commit()
     connection.close()
-    print("Insert into table")
+    
   return render_template('scan.html')
-
-
 
 @app.route('/logout')
 def logout():
