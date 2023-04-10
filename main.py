@@ -259,7 +259,23 @@ def student_points():
     a[i]=a[i][0]
     i+=1
   return(a)
-
+def reset_students():
+  connection = sqlite3.connect("database.db")
+  cursor = connection.cursor()
+  cursor.execute('UPDATE IDs SET points = 0')
+  connection.commit()
+  connection.close()
+def all_usernames():
+  #Returns a list of all of the student names
+  connection = sqlite3.connect("database.db")
+  cursor = connection.cursor()
+  a=(cursor.execute("SELECT username FROM auth").fetchall())
+  connection.close()
+  i=0
+  while (i<len(a)):
+    a[i]=a[i][0]
+    i+=1
+  return(a)
 
 
 @app.route('/')
@@ -347,14 +363,65 @@ def login():
     return redirect(url_for('error'))
   return render_template('login.html')
 
-@app.route('/admin')
+@app.route('/admin', methods=['GET', 'POST'])
 def admin():
-  print(session)
   if (session['type'] == "viewer"):
     return redirect(url_for('view'))
   elif (session['type'] == "uploader"):
     return redirect(url_for('upload'))
-  return render_template('admin.html')
+
+
+  connection = sqlite3.connect("database.db")
+  cursor = connection.cursor()
+  cursor.execute('SELECT * FROM auth')
+  accounts = cursor.fetchall()
+  connection.close()
+
+  if request.method == 'POST':
+    usernames=all_usernames()
+    print(request.form)
+    if request.form.get("user_to_change") != None:
+      connection = sqlite3.connect("database.db")
+      cursor = connection.cursor()
+
+      print("UPDATE auth SET password = ? WHERE username="+request.form.get('user_to_change')+";")
+      cursor.execute("UPDATE auth SET hash = ? WHERE username='"+request.form.get('user_to_change')+"';", (request.form.get("new_password"),))
+
+      
+
+
+
+      connection.commit()
+      connection.close()
+    if request.form.get('regenerate_points') == 'regenerate_points':
+      # Sets all student points to zero
+      reset_students()
+    if request.form.get('username') != None:
+      #Create new user
+      newuser_username = request.form['username']
+      newuser_password = request.form['password']
+      newuser_type = request.form['type']
+
+      connection = sqlite3.connect("database.db")
+      cursor = connection.cursor()
+      cursor.execute("INSERT INTO auth (username, hash, type) VALUES ('"+newuser_username+"', '"+newuser_password+"', '"+newuser_type+"');")
+      connection.commit()
+      connection.close()
+    for i in usernames:
+      if 'delete_user_'+i in request.form:
+        connection = sqlite3.connect("database.db")
+        cursor = connection.cursor()
+        cursor.execute('DELETE FROM auth WHERE username=?', (i,))
+        connection.commit()
+        connection.close()
+
+       
+
+
+
+
+
+  return render_template('admin.html', accounts=accounts, users=all_usernames())
   
 @app.route('/events')
 def events():
@@ -371,7 +438,7 @@ def view():
 
   if 'type' in session:
     if (session['type'] == "admin"):
-      return redirect(url_for('admin'))
+      pass
     elif (session['type'] == "viewer"):
       pass
     elif (session['type'] == "uploader"):
@@ -476,7 +543,6 @@ def winner():
 
   return render_template('winners.html', results=results, single_winner=random_winner, all_winners=random_winner_each_grade)
 
-
 @app.route('/scan', methods=['GET', 'POST'])
 def upload():
 
@@ -487,7 +553,6 @@ def upload():
 
   id = request.args.get('id')
 
-  print(id)
   if id != "None":
 
     connection = sqlite3.connect("database.db")
@@ -497,7 +562,7 @@ def upload():
     cursor.execute("UPDATE IDs SET points = points + 1 WHERE id = ?;", (id,))
     connection.commit()
     connection.close()
-    
+
   return render_template('scan.html')
 
 @app.route('/logout')

@@ -4,7 +4,57 @@
 
 <h1>Admin page</h1>
 <p>Create users, change passwords, troubleshoot and status of all parts of the site</p>
-<p>Also needs to be able to add a student ids individually</p>
+
+<style>
+    table, th, td {
+      border:1px solid black;
+    }
+</style>
+
+
+{% block content %}
+    <h2>Involve User Accounts</h2>
+    {% if accounts %}
+    <ul><table style="width:100%"><tr><td>Username</td><td>Hash</td><td>Acount type</td></tr>
+        {% for account in accounts %}
+        <tr id="id_{{account[0]}}"><td><form method="post" action="/admin"><input type="submit" value="delete_user_{{account[0]}}" name="delete_user_{{account[0]}}"/></form>{{account[0]}}</td><td>{{account[1]}}</td><td>{{account[2]}}</td></tr>
+        {% endfor %}
+    </table></ul>
+    {% endif %}
+{% endblock %}
+
+
+<form method="post" action="/admin">
+    <p>Needs a warning button to pop up</p>
+    <input type="submit" value="regenerate_points" name="regenerate_points"/>
+</form>
+
+
+<form action="" method = "POST">
+    <p>Username <input type = "text" name = "username" /></p>
+    <p>Password <input type = "password" name = "password" /></p>
+    <select name="type" id="type">
+        <option value="admin">Admin</option>
+        <option value="viewer">Viewer</option>
+        <option value="scanner">Scanner</option>
+    </select>
+    <p><input type = "submit" value = "Submit" /></p>
+</form>
+
+<p>Change user password</p>
+<form method="post">
+    <p>New password: <input type = "text" name = "new_password" /></p>
+    <select name="user_to_change" id="user_to_change">
+
+        {% for user in users %}
+        <option value= "{{user}}">{{user}}</option>
+        {% endfor %}
+    </select> 
+    <p><input type = "submit" value = "Submit" /></p>
+
+</form>
+
+
 
 </body>
 </html> 
