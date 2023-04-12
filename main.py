@@ -3,27 +3,42 @@ import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
 import random
 import itertools
-
+from datetime import datetime
+import time
 # We need a utility for uploading an existing student name to id database for use?
 
 #  python3.11 -m venv fbla
 #  source env/bin/activate
 app = Flask(__name__)
 app.secret_key = b'm#HS3ZyNqPNj$sga7QJVd66d!TjT6Kzr'
+def log(to_log):
+  f=open("log.txt", "a")
+  f.write(to_log)
+  f.close()
+def does_event_exist(id):
+  connection = sqlite3.connect("database.db")
+  cursor = connection.cursor()
+  print("does_event_exist", id)
 
+  a=(cursor.execute("SELECT * FROM event_list WHERE event = "+str(id)+";").fetchone())
+  
+  connection.close()
+  print("does_event_exist", a)
+
+  if a==None:
+    return(False)
+  return(True)
 def change_active_event(new_event):
   new_event="'"+new_event+"'"
-  print(new_event)
   #Changes the current events that the scanner page enters into
   connection = sqlite3.connect("database.db")
   cursor = connection.cursor()
 
-  cursor.execute("DELETE FROM active_event WHERE del = 1;")
+  cursor.execute("DELETE FROM active_event WHERE del = 1;")#del = 1 becasue I made a simple column to find which event to delete, I could just use delete *
   cursor.execute(("INSERT INTO active_event(active_event,del) VALUES(?,1);"), (new_event,))
 
   connection.commit()
   connection.close()
-  return ("Active event replaced")
 def active_event():
   #Returns the current events that the scanner page enters into
   connection = sqlite3.connect("database.db")
@@ -276,6 +291,43 @@ def all_usernames():
     a[i]=a[i][0]
     i+=1
   return(a)
+def new_event(name, type):
+  #Inserts a new event into the database. Take the name and type and creates a unique ID
+  date=datetime.today().strftime('%m-%d-%Y')
+
+  a=True
+  i=1
+  while(a==True):
+    append="-"+str(i)
+    print("=======")
+    print(date+append)
+    if does_event_exist(date+append)==True:
+      i+=1
+    else:
+      date=str(date)
+      append=(str(append))
+      new_event_id=(str(date)+str(append))
+
+      connection = sqlite3.connect("database.db")
+      cursor = connection.cursor()
+
+      cursor.execute("INSERT INTO event_list(event,type,name) VALUES('"+new_event_id+"','"+type+"','"+name+"');")
+      cursor.execute("CREATE TABLE '"+new_event_id+"'(ID text);")
+
+      connection.commit()
+      connection.close()
+
+      a=False
+    if (i>100):
+      print("Loop broken. Exiting")
+      a=False
+def delete_event(event):
+      connection = sqlite3.connect("database.db")
+      cursor = connection.cursor()
+      cursor.execute("DROP TABLE '"+event+"';")
+      cursor.execute("DELETE FROM event_list WHERE event='"+event+"';")
+      connection.commit()
+      connection.close()
 
 
 @app.route('/')
@@ -416,24 +468,49 @@ def admin():
         connection.close()
 
        
+  f=open("log.txt", "r")
+  log=f.readlines()
+  f.close()
 
-
-
-
-
-  return render_template('admin.html', accounts=accounts, users=all_usernames())
+  return render_template('admin.html', accounts=accounts, users=all_usernames(), log=log)
   
-@app.route('/events')
+@app.route('/events', methods=['GET', 'POST'])
 def events():
+  types = ["Sport", "Rally", "Musical", "Theatre", "Other"]
+
   
   if (session['type'] == "uploader"):
     return redirect(url_for('upload'))
-  print("Get a list of past events, choose an active event, create a new event")
 
-  return render_template('events.html')
+  if request.method == 'POST':
+    if 'event_type' in request.form:
+
+      new_event_name = request.form['event_name']
+      new_event_type = request.form['event_type']
+
+      new_event(new_event_name, new_event_type)
+    if "new_active_event" in request.form:
+      change_active_event(request.form['new_active_event'])
+
+    for i in request.form:
+      if "delete_event_" in i:
+        to_delete=(i[13:])
+        delete_event(to_delete)
+      
+
+
+  connection = sqlite3.connect("database.db")
+  cursor = connection.cursor()
+  cursor.execute('SELECT * FROM event_list')
+  events = cursor.fetchall()
+  connection.close()
+
+  return render_template('events.html', events=events, types=types, active_event=active_event()[1:-1])
 
 @app.route('/report', methods=['GET', 'POST'])
 def view():
+  types = ["Sport", "Rally", "Musical", "Theatre", "Other"]
+
 
 
   if 'type' in session:
@@ -489,7 +566,6 @@ def view():
 
   events = (list_events())
   names = (list_event_names())
-  types = ["Sport", "Rally", "Musical", "Theatre", "Other"]
 
 
 
