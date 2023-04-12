@@ -12,21 +12,54 @@
         
     </head>
     <body>
-        <script>
-            document.querySelector("#scanbox").addEventListener("keypress", function (e) {
-                if (event.key === "Enter") {
-                  //https://stackoverflow.com/questions/62075431/flask-post-request-form-data-without-refreshing-page
-                  party.confetti(this);
-                }
-            });
-            party.confetti(runButton, {
-                spread: party.variation.range(400),
-                count: party.variation.range(200, 300),
-                speed: party.variation.range(200, 400),
-                
-            });
-          </script>
-
       <div class="uk-container"><h1>Manage Events</h1></div>
+
+      <!--Table of events with delete buttons, create new event, -->
+
+      <style>
+        table, th, td {
+          border:1px solid black;
+        }
+      </style>
+
+      {% block content %}
+        <h2>Event List</h2>
+        {% if events %}
+        <ul><table style="width:100%"><tr><td>Name</td><td>ID</td><td>Type</td></tr>
+            {% for event in events %}
+            <tr id="id_{{event[2]}}"><td><form method="post" action="/events"><input type="submit" value="delete_event_{{event[0]}}" name="delete_event_{{event[0]}}"/></form>{{event[2]}}</td><td>{{event[0]}}</td><td>{{event[1]}}</td></tr>
+            {% endfor %}
+        </table></ul>
+        {% endif %}
+      {% endblock %}
+
+
+
+      <form method="post">
+        <p>Event name: <input type = "text" name = "event_name" /></p>
+        <select name="event_type" id="event_type">
+    
+            {% for type in types %}
+            <option value= "{{type}}">{{type}}</option>
+            {% endfor %}
+        </select> 
+        <p><input type = "submit" value = "Submit" /></p>
+    
+      </form>
+
+      <form method="post">
+        <select name="new_active_event" id="new_active_event" onchange='if(this.value != 0) { this.form.submit(); }'>
+
+            {% for event in events %}
+            {% if event[0] == active_event %}
+            <p>{{event}}</p>
+            <option value= "{{event[0]}}" SELECTED>{{event[2]}}</option>
+            {% else %}
+            <option value= "{{event[0]}}">{{event[2]}}</option>
+            {% endif %}
+            {% endfor %}
+        </select> 
+    </form>
+
     </body>
 </html>

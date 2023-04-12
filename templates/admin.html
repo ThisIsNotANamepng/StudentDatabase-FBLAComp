@@ -1,9 +1,19 @@
 <!DOCTYPE html>
 <html>
+<head>
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.16.14/dist/css/uikit.min.css" />
+
+    <!-- UIkit JS -->
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.16.14/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.16.14/dist/js/uikit-icons.min.js"></script>
+</head>
 <body>
 
 <h1>Admin page</h1>
 <p>Create users, change passwords, troubleshoot and status of all parts of the site</p>
+
+
 
 <style>
     table, th, td {
@@ -41,7 +51,7 @@
     <p><input type = "submit" value = "Submit" /></p>
 </form>
 
-<p>Change user password</p>
+<p>Change account password</p>
 <form method="post">
     <p>New password: <input type = "text" name = "new_password" /></p>
     <select name="user_to_change" id="user_to_change">
@@ -54,7 +64,11 @@
 
 </form>
 
+<h2>Log</h2>
 
+{% for l in log %}
+<p>{{l}}</p>
+{% endfor %}
 
 </body>
 </html> 
