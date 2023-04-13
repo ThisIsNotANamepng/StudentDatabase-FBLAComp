@@ -2,7 +2,7 @@
 <html>
     <head>
       <!--In the furture downlaod the js and css files to host on the server for increased privacy and security, for now just use cdn-->
-      <title>Scan</title>
+      <title>Events | involve</title>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.16.3/dist/css/uikit.min.css" />
@@ -12,54 +12,65 @@
         
     </head>
     <body>
-      <div class="uk-container"><h1>Manage Events</h1></div>
+      <div class="uk-container uk-position-top-right">
+        <a class="uk-button uk-button-primary" href="/logout">Log out</a>
+        <a class="uk-button uk-button-primary" href="/events">Events</a>
+        <a class="uk-button uk-button-primary" href="/report">Report</a>
+      </div>
 
-      <!--Table of events with delete buttons, create new event, -->
+      <div class="uk-container"><h1>Manage Events</h1><hr class="uk-divider-icon"></div>
 
-      <style>
-        table, th, td {
-          border:1px solid black;
-        }
-      </style>
 
-      {% block content %}
+      <div class="uk-container">
+        {% block content %}
         <h2>Event List</h2>
         {% if events %}
-        <ul><table style="width:100%"><tr><td>Name</td><td>ID</td><td>Type</td></tr>
+        <ul><table class="uk-table uk-table-hover uk-table-divider" style="width:100%"><tr><td>Name</td><td>ID</td><td>Type</td></tr>
             {% for event in events %}
-            <tr id="id_{{event[2]}}"><td><form method="post" action="/events"><input type="submit" value="delete_event_{{event[0]}}" name="delete_event_{{event[0]}}"/></form>{{event[2]}}</td><td>{{event[0]}}</td><td>{{event[1]}}</td></tr>
+            <tr id="id_{{event[2]}}"><td><form method="post" action="/events"><input id="{{event[0]}}" class="uk-button uk-button-default" type="submit" value="Delete Event" name="delete_event_{{event[0]}}"/><label for="{{event[0]}}">{{event[2]}}</label></form></td><td>{{event[0]}}</td><td>{{event[1]}}</td></tr>
             {% endfor %}
         </table></ul>
         {% endif %}
-      {% endblock %}
+        {% endblock %}
+        <hr class="uk-divider-icon">
 
+      </div>
 
-
-      <form method="post">
-        <p>Event name: <input type = "text" name = "event_name" /></p>
-        <select name="event_type" id="event_type">
-    
+      <br>
+      <div class="uk-container">
+        <h2>Create New Event</h2>
+        <form method="post">
+          <p>Event name: <input class="uk-input" type="text" name = "event_name" /></p>
+          <select class="uk-select" name="event_type" id="event_type">
+      
             {% for type in types %}
-            <option value= "{{type}}">{{type}}</option>
+            <option value="{{type}}">{{type}}</option>
             {% endfor %}
-        </select> 
-        <p><input type = "submit" value = "Submit" /></p>
-    
-      </form>
+          </select> 
+          <p><input class="uk-button uk-button-default" type="submit" value = "Submit" /></p>
+      
+        </form>
+        <hr class="uk-divider-icon">
 
-      <form method="post">
-        <select name="new_active_event" id="new_active_event" onchange='if(this.value != 0) { this.form.submit(); }'>
+      </div>
+
+      <br>
+      <div class="uk-container">
+        <h2>Change Active Event <a class="uk-badge" href="/help#active_events">?</a></h2>
+        <form method="post">
+          <select class="uk-select" name="new_active_event" id="new_active_event" onchange='if(this.value != 0) { this.form.submit(); }'>
 
             {% for event in events %}
             {% if event[0] == active_event %}
             <p>{{event}}</p>
-            <option value= "{{event[0]}}" SELECTED>{{event[2]}}</option>
+            <option value= "{{event[0]}}" SELECTED>{{event[0]}} - {{event[2]}}</option>
             {% else %}
-            <option value= "{{event[0]}}">{{event[2]}}</option>
+            <option value= "{{event[0]}}">{{event[0]}} - {{event[2]}}</option>
             {% endif %}
             {% endfor %}
-        </select> 
-    </form>
-
+          </select> 
+        </form>
+      </div>
+      <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
     </body>
 </html>

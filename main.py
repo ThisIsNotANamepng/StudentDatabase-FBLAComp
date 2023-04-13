@@ -5,7 +5,7 @@ import random
 import itertools
 from datetime import datetime
 import time
-# We need a utility for uploading an existing student name to id database for use?
+# Ask Finke: return redirect, delete event
 
 #  python3.11 -m venv fbla
 #  source env/bin/activate
@@ -16,17 +16,17 @@ def log(to_log):
   f.write(to_log)
   f.close()
 def does_event_exist(id):
+  print()
   connection = sqlite3.connect("database.db")
   cursor = connection.cursor()
-  print("does_event_exist", id)
 
   a=(cursor.execute("SELECT * FROM event_list WHERE event = "+str(id)+";").fetchone())
+  print("sql return:", a)
   
   connection.close()
-  print("does_event_exist", a)
 
   if a==None:
-    return(False)
+    return(False)#Maybe does the id append notmiterate up
   return(True)
 def change_active_event(new_event):
   new_event="'"+new_event+"'"
@@ -298,18 +298,26 @@ def new_event(name, type):
   a=True
   i=1
   while(a==True):
+    print("--Looped through while loop again")
     append="-"+str(i)
     print("=======")
     print(date+append)
+    print("i:", i)
+    print(does_event_exist(date+append))
     if does_event_exist(date+append)==True:
+      print("does_event_exist is True")
+  
       i+=1
     else:
       date=str(date)
       append=(str(append))
       new_event_id=(str(date)+str(append))
+      print("append:", append)
 
       connection = sqlite3.connect("database.db")
       cursor = connection.cursor()
+
+      print("GOING TO CREATE", new_event_id, "\n\n\n\n\n\n")
 
       cursor.execute("INSERT INTO event_list(event,type,name) VALUES('"+new_event_id+"','"+type+"','"+name+"');")
       cursor.execute("CREATE TABLE '"+new_event_id+"'(ID text);")
@@ -466,7 +474,7 @@ def admin():
         cursor.execute('DELETE FROM auth WHERE username=?', (i,))
         connection.commit()
         connection.close()
-
+    return redirect(url_for('admin'))
        
   f=open("log.txt", "r")
   log=f.readlines()
@@ -484,6 +492,7 @@ def events():
 
   if request.method == 'POST':
     if 'event_type' in request.form:
+      print("Creating new event")
 
       new_event_name = request.form['event_name']
       new_event_type = request.form['event_type']
@@ -576,14 +585,13 @@ def view():
 
   #Bar chart to display each event with a dropdown menu to change the grade which is displayed (by number of attendance)
   grades=[9, 10, 11, 12]
+  print(names)
+
+  title_name=names[events.index(population_event)]
+  print(title_name)
 
 
-  
-  #Radar chart with types of events vs different grades
-
-
-  
-  return render_template('view.html', top_earners_x=top_earners_names, top_earners_y=top_earners_points, attendance_x=[attendance, remaining], events=zip(events, names), population_event=population_event, types=types, active_type=active_type, events_type_x=types_events(active_type), events_type_y=type_attendance(active_type), events_x=list_event_names(), events_y=count_events(), percentage_types_x=types, percentage_types_y=percentage_types, grade_events_list_x=list_event_names(), grade_events_list_y=count_events_grade(active_grade), grade_events_list_grade=active_grade, grades=grades, active_grade=active_grade, grade_points_y=grade_points(), grade_points_data=grade_points(), student_points=student_points(), student_names=student_names())
+  return render_template('view.html', top_earners_x=top_earners_names, top_earners_y=top_earners_points, attendance_x=[attendance, remaining], events=zip(events, names), population_event=population_event, types=types, active_type=active_type, events_type_x=types_events(active_type), events_type_y=type_attendance(active_type), events_x=list_event_names(), events_y=count_events(), percentage_types_x=types, percentage_types_y=percentage_types, grade_events_list_x=list_event_names(), grade_events_list_y=count_events_grade(active_grade), grade_events_list_grade=active_grade, grades=grades, active_grade=int(active_grade), grade_points_y=grade_points(), grade_points_data=grade_points(), student_points=student_points(), student_names=student_names(), title_name=title_name)
 
 @app.route('/winners', methods=['GET', 'POST'])
 def winner():
@@ -606,7 +614,8 @@ def winner():
       random_winner=randomm_winner()
     elif  request.form.get('generate_students') == 'generate_students':
       # Pass the students
-      random_winner_each_grade=randomm_winner_each_grade()      
+      random_winner_each_grade=randomm_winner_each_grade()   
+    #return redirect(url_for('winner'))   
 
 
   if 'query' in request.form:
@@ -628,6 +637,7 @@ def upload():
     return redirect(url_for('view'))
 
   id = request.args.get('id')
+  print(request.form)
 
   if id != "None":
 
@@ -654,6 +664,6 @@ def logout():
 
 
 
-app.run(host='0.0.0.0', port=5002)
+app.run(host='0.0.0.0', port=5003)
 
 

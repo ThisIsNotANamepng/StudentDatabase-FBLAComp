@@ -1,39 +1,55 @@
 <html>
-<head>
-    <meta charset="utf-8" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
-</head>
+    <head>
+        <title>Report | involve</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.16.3/dist/css/uikit.min.css" />
+        <script src="https://cdn.jsdelivr.net/npm/uikit@3.16.3/dist/js/uikit.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/uikit@3.16.3/dist/js/uikit-icons.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+      </head>
 <body>
+    <div class="uk-child-width-1-3@s uk-grid" uk-grid>
+        <div class="uk-card uk-card-default uk-card-body"><canvas id="top-earners" width="800" height="450"></canvas></div>
+        <div class="uk-card uk-card-default uk-card-body"><canvas id="event_attendance" width="800" height="450"></canvas>
+        <form method="post">
+            <select name="event" id="event" onchange='if(this.value != 0) { this.form.submit(); }'>
+    
+                {% for event, name in events %}
+                {% if event == population_event %}
+                <option value= "{{event}}" SELECTED>{{name}}</option>
+                {% else %}
+                <option value= "{{event}}">{{name}}</option>
+                {% endif %}
+                {% endfor %}
+            </select> 
+        </form>
+        </div>
+        <div class="uk-card uk-card-default uk-card-body"><canvas id="type_bar" width="800" height="450"></canvas></div>
+        <div class="uk-card uk-card-default uk-card-body"><canvas id="events_list" width="800" height="450"></canvas></div>
+        <div class="uk-card uk-card-default uk-card-body"><canvas id="grade_events_list" width="800" height="450"></canvas>
+        <form method="post">
+            <select name="grade" id="grade" onchange='if(this.value != 0) { this.form.submit(); }'>
+    
+                {% for grade in grades %}
+                {% if grade == active_grade %}
+                <option value= "{{grade}}" SELECTED>{{grade}}</option>
+                {% else %}
+                <option value= "{{grade}}">{{grade}}</option>
+                {% endif %}
+                {% endfor %}
+            </select> 
+        </form>
+        </div>
+        <div class="uk-card uk-card-default uk-card-body"><canvas id="percentage_types" width="800" height="450"></canvas></div>
+        <div class="uk-card uk-card-default uk-card-body"><canvas id="grade_points" width="800" height="450"></canvas></div>
+        <div class="uk-card uk-card-default uk-card-body"><canvas id="grade_points_pie" width="800" height="450"></canvas></div>
+        <div class="uk-card uk-card-default uk-card-body"><canvas id="student_list" width="800" height="450"></canvas></div>
+    </div>
 
-    <canvas id="top-earners" width="800" height="450"></canvas>
-    <br><br><br><br><br>
-    <canvas id="event_attendance" width="800" height="450"></canvas>
-    <br><br><br><br><br>
-    <canvas id="type_bar" width="800" height="450"></canvas>
-    <br><br><br><br><br>
-    <canvas id="events_list" width="800" height="450"></canvas>
-    <br><br><br><br><br>
-    <canvas id="grade_events_list" width="800" height="450"></canvas>
-    <br><br><br><br><br>
-    <canvas id="percentage_types" width="800" height="450"></canvas>
-    <br><br><br><br><br>
-    <canvas id="grade_points" width="800" height="450"></canvas>
-    <br><br><br><br><br>
-    <canvas id="student_list" width="800" height="450"></canvas>
 
 
-    <form method="post">
-        <select name="grade" id="grade" onchange='if(this.value != 0) { this.form.submit(); }'>
-
-            {% for grade in grades %}
-            {% if grade == active_grade %}
-            <option value= "{{grade}}" SELECTED>{{grade}}</option>
-            {% else %}
-            <option value= "{{grade}}">{{grade}}</option>
-            {% endif %}
-            {% endfor %}
-        </select> 
-    </form>
 
     <form method="post">
         <select name="type" id="type" onchange='if(this.value != 0) { this.form.submit(); }'>
@@ -49,18 +65,7 @@
     </form>
 
     
-    <form method="post">
-        <select name="event" id="event" onchange='if(this.value != 0) { this.form.submit(); }'>
 
-            {% for event, name in events %}
-            {% if event == population_event %}
-            <option value= "{{event}}" SELECTED>{{name}}</option>
-            {% else %}
-            <option value= "{{event}}">{{name}}</option>
-            {% endif %}
-            {% endfor %}
-        </select> 
-    </form>
 
 
 
@@ -95,7 +100,7 @@
             data: {
             labels: ["Students Attendad", "Students not attended"],
             datasets: [{
-                label: "Student Attendance",
+                label: "Student Attendance at {{title_name}}",
                 backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
                 data: {{ attendance_x|tojson }}//Needs the number of people there and not there
             }]
@@ -103,7 +108,7 @@
             options: {
             title: {
                 display: true,
-                text: 'Attendance at School Events '
+                text: 'Student Attendance at {{title_name}} '
             }
             }
         });
@@ -258,7 +263,7 @@
 
 
         //Pie Chart of points per grade
-        new Chart(document.getElementById("grade_points"), {
+        new Chart(document.getElementById("grade_points_pie"), {
             type: 'pie',
             data: {
             labels: ["9", "10", "11", "12"],

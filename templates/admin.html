@@ -1,66 +1,58 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <!-- UIkit CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.16.14/dist/css/uikit.min.css" />
-
-    <!-- UIkit JS -->
-    <script src="https://cdn.jsdelivr.net/npm/uikit@3.16.14/dist/js/uikit.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/uikit@3.16.14/dist/js/uikit-icons.min.js"></script>
-</head>
+    <head>
+        <title>Admin | involve</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.16.3/dist/css/uikit.min.css" />
+        <script src="https://cdn.jsdelivr.net/npm/uikit@3.16.3/dist/js/uikit.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/uikit@3.16.3/dist/js/uikit-icons.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js"></script>
+      </head>
 <body>
 
-<h1>Admin page</h1>
-<p>Create users, change passwords, troubleshoot and status of all parts of the site</p>
+<div class="uk-container"><h1>Admin Page</h1><hr class="uk-divider-icon"></div>
 
-
-
-<style>
-    table, th, td {
-      border:1px solid black;
-    }
-</style>
-
-
+<div class="uk-container">
 {% block content %}
     <h2>Involve User Accounts</h2>
     {% if accounts %}
-    <ul><table style="width:100%"><tr><td>Username</td><td>Hash</td><td>Acount type</td></tr>
+    <ul><table class="uk-table uk-table-hover uk-table-divider" style="width:100%"><tr><td>Username</td><td>Password</td><td>Acount type<a class="uk-badge" href="/help#account_types">?</a></td></tr>
         {% for account in accounts %}
-        <tr id="id_{{account[0]}}"><td><form method="post" action="/admin"><input type="submit" value="delete_user_{{account[0]}}" name="delete_user_{{account[0]}}"/></form>{{account[0]}}</td><td>{{account[1]}}</td><td>{{account[2]}}</td></tr>
+        <tr id="id_{{account[0]}}"><td><form method="post" action="/admin"><button class="uk-button uk-button-default" id="delete_user_{{account[0]}}" type="submit" value="delete_user_{{account[0]}}" name="delete_user_{{account[0]}}">Delete {{account[0]}}</button><label for="delete_user_{{account[0]}}">{{account[0]}}</label></form></td><td>{{account[1]}}</td><td>{{account[2]}}</td></tr>
         {% endfor %}
     </table></ul>
     {% endif %}
 {% endblock %}
 
-
+<h2>Reset All Students' Points to Zero</h2>
 <form method="post" action="/admin">
     <p>Needs a warning button to pop up</p>
-    <input type="submit" value="regenerate_points" name="regenerate_points"/>
+    <button class="uk-button uk-button-default" type="submit" value="regenerate_points" name="regenerate_points">Reset Points</button>
 </form>
 
-
+<h2>Create New User</h2>
 <form action="" method = "POST">
-    <p>Username <input type = "text" name = "username" /></p>
-    <p>Password <input type = "password" name = "password" /></p>
-    <select name="type" id="type">
+    <p>Username <input class="uk-input" type = "text" name = "username" /></p>
+    <p>Password <input class="uk-input" type = "password" name = "password" /></p>
+    <select class="uk-select" name="type" id="type">
         <option value="admin">Admin</option>
         <option value="viewer">Viewer</option>
         <option value="scanner">Scanner</option>
     </select>
-    <p><input type = "submit" value = "Submit" /></p>
+    <p><input class="uk-button uk-button-default" type = "submit" value = "Submit" /></p>
 </form>
 
-<p>Change account password</p>
+<h2>Change account password</h2>
 <form method="post">
-    <p>New password: <input type = "text" name = "new_password" /></p>
-    <select name="user_to_change" id="user_to_change">
+    <p>New password: <input class="uk-input" type = "text" name = "new_password" /></p>
+    <select class="uk-select" name="user_to_change" id="user_to_change">
 
         {% for user in users %}
         <option value= "{{user}}">{{user}}</option>
         {% endfor %}
     </select> 
-    <p><input type = "submit" value = "Submit" /></p>
+    <p><input class="uk-button uk-button-default" type = "submit" value = "Submit" /></p>
 
 </form>
 
@@ -69,6 +61,6 @@
 {% for l in log %}
 <p>{{l}}</p>
 {% endfor %}
-
+</div>
 </body>
 </html> 

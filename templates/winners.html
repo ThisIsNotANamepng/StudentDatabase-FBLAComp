@@ -1,56 +1,70 @@
 <!DOCTYPE html>
 <html>
+    <head>
+        <!--In the furture downlaod the js and css files to host on the server for increased privacy and security, for now just use cdn-->
+        <title>Winners | involve</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.16.3/dist/css/uikit.min.css" />
+        <script src="https://cdn.jsdelivr.net/npm/uikit@3.16.3/dist/js/uikit.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/uikit@3.16.3/dist/js/uikit-icons.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js"></script>
+      </head>
 <body>
 
-
-<h1>Winners</h1>
-
-<style>
-    table, th, td {
-      border:1px solid black;
-    }
-</style>
-
-<form method="post" action="/winners">
-    <input type="submit" value="generate_student" name="generate_student"/>
-</form>
-<form method="post" action="/winners">
-    <input type="submit" value="generate_students" name="generate_students"/>
-</form>
-{% if single_winner != "" %}
-    <h2>Winner: {{ single_winner[0] }}, in grade {{ single_winner[2] }}</h2>
-{% elif all_winners != "" %}
-    <h2>Winners</h2>
-    <ul>
-        <li>Twelfth grade: all_winners[3][0]</li>
-        <li>Eleventh grade: all_winners[2][0]</li>
-        <li>Tenth grade: all_winners[1][0]</li>
-        <li>Ninth grade: all_winners[0][0]</li>
-
-    </ul>
-    <h2>Winners: {{ single_winner[0] }}, in grade {{ single_winner[2] }}</h2>
-{% endif %}
+    <div class="uk-container"><h1>Winners</h1><hr class="uk-divider-icon"></div>
 
 
-{% block content %}
-    <h1>Search Results</h1>
-    {% if results %}
-    <ul><table style="width:100%"><tr><td>Name</td><td>Grade</td><td>Points</td></tr>
-        {% for row in results %}
-        <tr><td>{{row[0]}}</td><td>{{row[2]}}</td><td>{{row[3]}}</td></tr>
-        {% endfor %}
-    </table></ul>
-    {% elif results==""%}
-    <p></p>
-    {% else %}
-    <p>No results found.</p>
-    {% endif %}
-{% endblock %}
+    <div class="uk-container uk-position-top-right">
+        <a class="uk-button uk-button-primary" href="/logout">Log out</a>
+        <a class="uk-button uk-button-primary" href="/events">Events</a>
+        <a class="uk-button uk-button-primary" href="/report">Report</a>
+      </div>
 
-<form method="POST" action="{{ url_for('winner') }}">
-    <input type="text" name="query" placeholder="Search...">
-    <button type="submit">Search</button>
-</form>
+
+    <div class="uk-container">
+        <form class="uk-table uk-table-hover uk-table-divider" method="post" action="/winners">
+            <button class="uk-button uk-button-default" type="submit" value="generate_student" name="generate_student">Generate Random Winner</button>
+        </form>
+        <form class="uk-table uk-table-hover uk-table-divider" method="post" action="/winners">
+            <button class="uk-button uk-button-default" type="submit" value="generate_students" name="generate_students">Generate a Random Winner in Each Grade</button>
+        </form>
+        {% if single_winner != "" %}
+            <h2>Winner: {{ single_winner[0] }}, in grade {{ single_winner[2] }}</h2>
+        {% elif all_winners != "" %}
+            
+            <h2>Winners</h2>
+            <ul>
+                <li>Twelfth grade: {{all_winners[6]}}, ID: {{all_winners[7]}}</li>
+                <li>Eleventh grade: {{all_winners[4]}}, ID: {{all_winners[5]}}</li>
+                <li>Tenth grade: {{all_winners[2]}}, ID: {{all_winners[3]}}</li>
+                <li>Ninth grade: {{all_winners[0]}}, ID: {{all_winners[1]}}</li>
+
+            </ul>
+        {% endif %}
+        <hr class="uk-divider-icon">
+
+
+        {% block content %}
+            <h1>Search Results</h1>
+            {% if results %}
+            <ul><table style="width:100%"><tr><td>Name</td><td>Grade</td><td>Points</td></tr>
+                {% for row in results %}
+                <tr><td>{{row[0]}}</td><td>{{row[2]}}</td><td>{{row[3]}}</td></tr>
+                {% endfor %}
+            </table></ul>
+            {% elif results==""%}
+            <p></p>
+            {% else %}
+            <p>No results found.</p>
+            {% endif %}
+        {% endblock %}
+
+        <form class="uk-table uk-table-hover uk-table-divider" method="POST" action="{{ url_for('winner') }}">
+            <input class="uk-input" type="text" name="query" placeholder="Search..."><br>
+            <button class="uk-button uk-button-default" type="submit">Search</button>
+        </form>
+    </div>
   
 
 
