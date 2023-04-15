@@ -9,20 +9,53 @@
         <script src="https://cdn.jsdelivr.net/npm/uikit@3.16.3/dist/js/uikit.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/uikit@3.16.3/dist/js/uikit-icons.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js"></script>
-          
+        <link rel="icon" type="image/ico" href="static/favicon.ico">
+
       </head>
 <body>
+    <style>p, h1, h2, h3, h4 {color: #003049;}</style>
 
-    <h1>Help</h1>
-    <h2>How do I</h2>
-    <h3>Scan an ID</h3>
-    <p>Go to this page and use the tjiong to scn it</p>
-    <h3>Set up a scanner</h3>
-    <p>Use a model of scanner</p>
-    <p>Q&A</p>
-    <p>Chatbot</p>
-    <h2>What is an Active Event?</h2>
-    account_types
-    active_events
+    <div class="uk-container">
+
+        <h1>Help</h1>
+        <h2>How do I</h2>
+        <h3>Set up a scanner</h3>
+        <p>Plug in the barcode scanner into a USB port on the computer. Go to the <a href="/scan">scanner page.</a> The scanner will automatically scan the barcode and submit it if you click inside the input bar.</p>
+        <h3>Scan an ID</h3>
+        <p>Go to the <a href="/scan">scanner</a> page and point the scanner at the bar code on the student ID while pulling the trigger</p>
+        <h3>Find the active event</h3>
+        <p>Go to the <a href="/events#active_event">events page</a>. The current active event is the one shown be default in the dropdown menu.</p>
+        <h3>Change an active event</h3>
+        <p>Go to the <a href="/events#active_event">events page</a> and choose a new active event frmom the dropdown menu.</p>
+        <h3>Create events</h3>
+        <p>Go to the <a href="/events#create_events">events</a> page, input a name and select an event type and click submit.</p>
+        <h3>Generate random winners</h3>
+        <p>Go to the <a href="/winners">winners</a> page and click the "GENERATE RANDOM WINNERS" button.</p>
+        <h3>Find a student</h3>
+        <p>Go to the <a href="/winners">winners</a> page, enter the students name in the search bar, and click submit.</p>
+        <h3>Analyze reports</h3>
+        <p>Go to the <a href="/report">report</a> page.</p>
+        <h3>Manage accounts</h3>
+        <p>Go to the <a href="/admin">admin</a> page, and use the controls to change passwords, delete accounts, and create accounts.</p>
+        <h3>Reset student points</h3>
+        <p>Go to the <a href="/admin">admin</a> page, and click the "RESET ALL STUDENT POINTS" button.</p>
+        <h3>Troubleshoot problems</h3>
+        <p>Go to the <a href="/admin">admin</a> page, and scroll all the way to the bottom to find the log.</p>
+        <h2>Explainers</h2>
+        <h3>What is an active event?</h3>
+        <p>An active event is the event in which students scanned by the scanner are entered into.</p>
+        <h3>What are student points?</h3>
+        <p>Students are automatically assigned one point when they attend an event.</p>
+        <h3>Account types</h3>
+        <p>There are three account types.</p>
+        <h4>Admin accounts</h4>
+        <p>Admin accounts can manage accounts and troubleshoot the website, as well as access all parts of the website. They should generally be restricted to only those who need an admin account (i.e. the IT department).</p>
+        <h4>Viewer accounts</h4>
+        <p>Viewer accounts are only allowed to view reports on student involvement and manage events(create events, change the active event and delete events). They should generally be given to school staff who need to guage student involvement.</p>
+        <h4>Scanner accounts</h4>
+        <p>Scanner accounts are only allowed to enter student IDs to the current active event. They should be restricted to computers which scan student IDs at school events.</p>
+        <h3>Basic security strategy</h3>
+        <p>The restrictions for the accounts outlined above are there to startegicaly segment privileges between accounts. In order for these restrictions to have any effect, accounts should be given </p>
+    </div>
 </body>
 </html>

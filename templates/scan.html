@@ -2,18 +2,29 @@
 <html>
     <head>
       <!--In the furture downlaod the js and css files to host on the server for increased privacy and security, for now just use cdn-->
-      <title>Scan</title>
+      <title>Scan | involve</title>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.16.3/dist/css/uikit.min.css" />
       <script src="https://cdn.jsdelivr.net/npm/uikit@3.16.3/dist/js/uikit.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/uikit@3.16.3/dist/js/uikit-icons.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js"></script>
-        
+      <link rel="icon" type="image/ico" href="static/favicon.ico">
+
     </head>
     <body>
+      <style>p, h1, h2, h3, h4 {color: #003049;}</style>
 
-      <a class="uk-position-top-right uk-button uk-button-primary" href="/logout">Log out</a>
+      <div class="uk-container uk-position-top-left">
+        {% if jinja_message != None %}
+        <div class="uk-alert-success" uk-alert>
+            <a class="uk-alert-close" uk-close></a>
+            <p>Succesfully registered {{jinja_message[0]}}.</p>
+        </div>
+        {% endif %}
+      </div>
+
+      <a style="background-color: #669BBC;" class="uk-position-top-right uk-button uk-button-primary" href="/logout">Log out</a>
       <div class="uk-container uk-position-center">
         <div class="uk-container uk-text-center"><h1 class="uk-align-center">Scan</h1></div>
         <!--<h3>I need a color pallette</h3>-->

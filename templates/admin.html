@@ -8,59 +8,94 @@
         <script src="https://cdn.jsdelivr.net/npm/uikit@3.16.3/dist/js/uikit.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/uikit@3.16.3/dist/js/uikit-icons.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js"></script>
+        <link rel="icon" type="image/ico" href="static/favicon.ico">
+
       </head>
 <body>
+    <style>p, h1, h2, h3, h4 {color: #003049;}</style>
 
-<div class="uk-container"><h1>Admin Page</h1><hr class="uk-divider-icon"></div>
-
-<div class="uk-container">
-{% block content %}
-    <h2>Involve User Accounts</h2>
-    {% if accounts %}
-    <ul><table class="uk-table uk-table-hover uk-table-divider" style="width:100%"><tr><td>Username</td><td>Password</td><td>Acount type<a class="uk-badge" href="/help#account_types">?</a></td></tr>
-        {% for account in accounts %}
-        <tr id="id_{{account[0]}}"><td><form method="post" action="/admin"><button class="uk-button uk-button-default" id="delete_user_{{account[0]}}" type="submit" value="delete_user_{{account[0]}}" name="delete_user_{{account[0]}}">Delete {{account[0]}}</button><label for="delete_user_{{account[0]}}">{{account[0]}}</label></form></td><td>{{account[1]}}</td><td>{{account[2]}}</td></tr>
-        {% endfor %}
-    </table></ul>
+    {% if jinja_message == "changed_password" %}
+    <div class="uk-position-top-left uk-alert-success" uk-alert>
+        <a class="uk-alert-close" uk-close></a>
+        <p>Succesfully changed password for {{jinja_message_2}}.</p>
+    </div>
+    {% elif jinja_message == "reset_students" %}
+    <div class="uk-position-top-left uk-alert-success" uk-alert>
+        <a class="uk-alert-close" uk-close></a>
+        <p>Succesfully reset all students.</p>
+    </div>
+    {% elif jinja_message == "created_account" %}
+    <div class="uk-position-top-left uk-alert-success" uk-alert>
+    <a class="uk-alert-close" uk-close></a>
+    <p>Succesfully created {{jinja_message_2}}.</p>
+    </div>
+    {% elif jinja_message == "deleted_user" %}
+    <div class="uk-position-top-left uk-alert-success" uk-alert>
+    <a class="uk-alert-close" uk-close></a>
+    <p>Succesfully deleted {{jinja_message_2}}.</p>
+    </div>
     {% endif %}
-{% endblock %}
 
-<h2>Reset All Students' Points to Zero</h2>
-<form method="post" action="/admin">
-    <p>Needs a warning button to pop up</p>
-    <button class="uk-button uk-button-default" type="submit" value="regenerate_points" name="regenerate_points">Reset Points</button>
-</form>
 
-<h2>Create New User</h2>
-<form action="" method = "POST">
-    <p>Username <input class="uk-input" type = "text" name = "username" /></p>
-    <p>Password <input class="uk-input" type = "password" name = "password" /></p>
-    <select class="uk-select" name="type" id="type">
-        <option value="admin">Admin</option>
-        <option value="viewer">Viewer</option>
-        <option value="scanner">Scanner</option>
-    </select>
-    <p><input class="uk-button uk-button-default" type = "submit" value = "Submit" /></p>
-</form>
 
-<h2>Change account password</h2>
-<form method="post">
-    <p>New password: <input class="uk-input" type = "text" name = "new_password" /></p>
-    <select class="uk-select" name="user_to_change" id="user_to_change">
+    <div class="uk-container"><h1>Admin Page</h1><hr class="uk-divider-icon"></div>
 
-        {% for user in users %}
-        <option value= "{{user}}">{{user}}</option>
-        {% endfor %}
-    </select> 
-    <p><input class="uk-button uk-button-default" type = "submit" value = "Submit" /></p>
+    <div class="uk-container">
+    {% block content %}
+        <h2>Involve User Accounts</h2>
+        {% if accounts %}
+        <ul><table class="uk-table uk-table-hover uk-table-divider" style="width:100%"><tr><td>Username</td><td>Password</td><td>Acount type<a class="uk-badge" href="/help#account_types">?</a></td></tr>
+            {% for account in accounts %}
+            <tr id="id_{{account[0]}}"><td><form method="post" action="/admin"><button class="uk-button uk-button-danger" id="delete_user_{{account[0]}}" type="submit" value="delete_user_{{account[0]}}" name="delete_user_{{account[0]}}">Delete {{account[0]}}</button><label for="delete_user_{{account[0]}}">{{account[0]}}</label></form></td><td>{{account[1]}}</td><td>{{account[2]}}</td></tr>
+            {% endfor %}
+        </table></ul>
+        {% endif %}
+    {% endblock %}
 
-</form>
+    <h2>Reset All Students' Points to Zero</h2>
 
-<h2>Log</h2>
+    <!-- This is the modal -->
+    <div id="reset_points" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body">
+            <h2 class="uk-modal-title">Are you sure you want to reset all students?</h2>
+            <p>This action will reset points for all students and is irreversible.</p>
+            <button class="uk-button uk-button-danger" type="submit" value="regenerate_points" name="regenerate_points">Reset Points</button>
+        </div>
+    </div>
+    <form method="post" action="/admin">
+        <button class="uk-button uk-button-danger" uk-toggle="target: #reset_points" type="button">Reset all student points</button>
+    </form>
 
-{% for l in log %}
-<p>{{l}}</p>
-{% endfor %}
-</div>
+    <h2>Create New User</h2>
+    <form action="" method = "POST">
+        <p>Username <input class="uk-input" type = "text" name = "username" /></p>
+        <p>Password <input class="uk-input" type = "password" name = "password" /></p>
+        <select class="uk-select" name="type" id="type">
+            <option value="admin">Admin</option>
+            <option value="viewer">Viewer</option>
+            <option value="scanner">Scanner</option>
+        </select>
+        <p><input class="uk-button uk-button-default" type = "submit" value = "Submit" /></p>
+    </form>
+
+    <h2>Change account password</h2>
+    <form method="post">
+        <p>New password: <input class="uk-input" type = "text" name = "new_password" /></p>
+        <select class="uk-select" name="user_to_change" id="user_to_change">
+
+            {% for user in users %}
+            <option value= "{{user}}">{{user}}</option>
+            {% endfor %}
+        </select> 
+        <p><input class="uk-button uk-button-default" type = "submit" value = "Submit" /></p>
+
+    </form>
+
+    <h2>Log</h2>
+
+    {% for l in log %}
+    <p>{{l}}</p>
+    {% endfor %}
+    </div>
 </body>
 </html> 

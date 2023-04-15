@@ -8,13 +8,23 @@
         <script src="https://cdn.jsdelivr.net/npm/uikit@3.16.3/dist/js/uikit-icons.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+        <link rel="icon" type="image/ico" href="static/favicon.ico">
+
       </head>
 <body>
+
+    <div class="uk-container uk-position-top-right">
+        <a style="background-color: #669BBC;" class="uk-button uk-button-primary" href="/logout">Log out</a>
+        <a style="background-color: #669BBC;" class="uk-button uk-button-primary" href="/events">Events</a>
+        <a style="background-color: #669BBC;" class="uk-button uk-button-primary" href="/winners">Winners</a>
+    </div>
+    <div class="uk-container"><h1>Report</h1></div>
+
     <div class="uk-child-width-1-3@s uk-grid" uk-grid>
         <div class="uk-card uk-card-default uk-card-body"><canvas id="top-earners" width="800" height="450"></canvas></div>
         <div class="uk-card uk-card-default uk-card-body"><canvas id="event_attendance" width="800" height="450"></canvas>
         <form method="post">
-            <select name="event" id="event" onchange='if(this.value != 0) { this.form.submit(); }'>
+            <select class="uk-select" name="event" id="event" onchange='if(this.value != 0) { this.form.submit(); }'>
     
                 {% for event, name in events %}
                 {% if event == population_event %}
@@ -26,11 +36,24 @@
             </select> 
         </form>
         </div>
-        <div class="uk-card uk-card-default uk-card-body"><canvas id="type_bar" width="800" height="450"></canvas></div>
+        <div class="uk-card uk-card-default uk-card-body"><canvas id="type_bar" width="800" height="450"></canvas>
+        <form method="post">
+            <select class="uk-select" name="type" id="type" onchange='if(this.value != 0) { this.form.submit(); }'>
+    
+                {% for type in types %}
+                {% if type == active_type %}
+                <option value= "{{type}}" SELECTED>{{type}}</option>
+                {% else %}
+                <option value= "{{type}}">{{type}}</option>
+                {% endif %}
+                {% endfor %}
+            </select> 
+        </form>
+        </div>
         <div class="uk-card uk-card-default uk-card-body"><canvas id="events_list" width="800" height="450"></canvas></div>
         <div class="uk-card uk-card-default uk-card-body"><canvas id="grade_events_list" width="800" height="450"></canvas>
         <form method="post">
-            <select name="grade" id="grade" onchange='if(this.value != 0) { this.form.submit(); }'>
+            <select class="uk-select" name="grade" id="grade" onchange='if(this.value != 0) { this.form.submit(); }'>
     
                 {% for grade in grades %}
                 {% if grade == active_grade %}
@@ -51,18 +74,7 @@
 
 
 
-    <form method="post">
-        <select name="type" id="type" onchange='if(this.value != 0) { this.form.submit(); }'>
 
-            {% for type in types %}
-            {% if type == active_type %}
-            <option value= "{{type}}" SELECTED>{{type}}</option>
-            {% else %}
-            <option value= "{{type}}">{{type}}</option>
-            {% endif %}
-            {% endfor %}
-        </select> 
-    </form>
 
     
 

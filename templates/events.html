@@ -5,6 +5,7 @@
       <title>Events | involve</title>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="icon" type="image/ico" href="static/favicon.ico">
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.16.3/dist/css/uikit.min.css" />
       <script src="https://cdn.jsdelivr.net/npm/uikit@3.16.3/dist/js/uikit.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/uikit@3.16.3/dist/js/uikit-icons.min.js"></script>
@@ -12,10 +13,31 @@
         
     </head>
     <body>
+      <style>p, h1, h2, h3, h4 {color: #003049;} </style>
+
+      {% if jinja_message == "create_event" %}
+      <div class="uk-position-top-left uk-alert-success" uk-alert>
+          <a class="uk-alert-close" uk-close></a>
+          <p>Succesfully created {{jinja_message_2}}.</p>
+      </div>
+      {% elif jinja_message == "change_active_event" %}
+      <div class="uk-position-top-left uk-alert-success" uk-alert>
+          <a class="uk-alert-close" uk-close></a>
+          <p>Succesfully changed active event.</p>
+      </div>
+      {% elif jinja_message == "delete_event" %}
+      <div class="uk-position-top-left uk-alert-success" uk-alert>
+        <a class="uk-alert-close" uk-close></a>
+        <p>Succesfully deleted the event with id: {{jinja_message_2}}.</p>
+      </div>
+      {% endif %}
+
+
+
       <div class="uk-container uk-position-top-right">
-        <a class="uk-button uk-button-primary" href="/logout">Log out</a>
-        <a class="uk-button uk-button-primary" href="/events">Events</a>
-        <a class="uk-button uk-button-primary" href="/report">Report</a>
+        <a style="background-color: #669BBC;" class="uk-button uk-button-primary" href="/logout">Log out</a>
+        <a style="background-color: #669BBC;" class="uk-button uk-button-primary" href="/winners">Winners</a>
+        <a style="background-color: #669BBC;" class="uk-button uk-button-primary" href="/report">Report</a>
       </div>
 
       <div class="uk-container"><h1>Manage Events</h1><hr class="uk-divider-icon"></div>
@@ -27,7 +49,9 @@
         {% if events %}
         <ul><table class="uk-table uk-table-hover uk-table-divider" style="width:100%"><tr><td>Name</td><td>ID</td><td>Type</td></tr>
             {% for event in events %}
-            <tr id="id_{{event[2]}}"><td><form method="post" action="/events"><input id="{{event[0]}}" class="uk-button uk-button-default" type="submit" value="Delete Event" name="delete_event_{{event[0]}}"/><label for="{{event[0]}}">{{event[2]}}</label></form></td><td>{{event[0]}}</td><td>{{event[1]}}</td></tr>
+            <div id="delete-event{{event[0]}}" uk-modal><div class="uk-modal-dialog uk-modal-body"><h2 class="uk-modal-title">Are you sure you want to delete this event?</h2><p>This will delete all data associated with this event, and is not reversible.</p><form method="post" action="/events"><button class="uk-button uk-button-danger" type="submit" value="delete_event_{{event[0]}}" name="delete_event_{{event[0]}}">Delete {{event[2]}}</button></form></div></div>
+            <tr id="id_{{event[0]}}"><td><button id="{{event[0]}}" uk-toggle="target: #delete-event{{event[0]}}" type="button" class="uk-button uk-button-danger">Delete event</button><label for="{{event[0]}}">{{event[2]}}</label></td><td>{{event[0]}}</td><td>{{event[1]}}</td></tr>
+
             {% endfor %}
         </table></ul>
         {% endif %}
@@ -37,7 +61,7 @@
       </div>
 
       <br>
-      <div class="uk-container">
+      <div id="create_events" class="uk-container">
         <h2>Create New Event</h2>
         <form method="post">
           <p>Event name: <input class="uk-input" type="text" name = "event_name" /></p>
@@ -55,7 +79,7 @@
       </div>
 
       <br>
-      <div class="uk-container">
+      <div id="active_event" class="uk-container">
         <h2>Change Active Event <a class="uk-badge" href="/help#active_events">?</a></h2>
         <form method="post">
           <select class="uk-select" name="new_active_event" id="new_active_event" onchange='if(this.value != 0) { this.form.submit(); }'>
