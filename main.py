@@ -1,9 +1,9 @@
-from flask import Flask, render_template, session, request, redirect, url_for
+from flask import Flask, render_template, session, request, redirect, url_for, send_from_directory
 import sqlite3 
 from werkzeug.security import generate_password_hash, check_password_hash
 import random
 import itertools
-from datetime import datetime
+import datetime 
 import time
 # Ask Finke: return redirect, delete event
 
@@ -12,16 +12,16 @@ import time
 app = Flask(__name__)
 app.secret_key = b'm#HS3ZyNqPNj$sga7QJVd66d!TjT6Kzr'
 def log(to_log):
+  to_log="\n"+str(datetime.datetime.now())+" - "+to_log
+
   f=open("log.txt", "a")
   f.write(to_log)
   f.close()
 def does_event_exist(id):
-  print()
   connection = sqlite3.connect("database.db")
   cursor = connection.cursor()
 
-  a=(cursor.execute("SELECT * FROM event_list WHERE event = "+str(id)+";").fetchone())
-  print("sql return:", a)
+  a=(cursor.execute("SELECT * FROM event_list WHERE event = '"+str(id)+"';").fetchone())
   
   connection.close()
 
@@ -96,7 +96,6 @@ def count_events_grade(grade):
   for i in events:
     count=0
     a=(cursor.execute("SELECT ID FROM '"+i+"'").fetchall())
-    #print("a", a)
     for i in a:
       #i = an id
       b=(cursor.execute("SELECT grade FROM IDs WHERE ID = ?", (i[0],)).fetchall())
@@ -140,7 +139,6 @@ def type_attendance(type):
   #Returns a list of attendance for a type
   connection = sqlite3.connect("database.db")
   cursor = connection.cursor()
-  #print("All counts for events for type :"+type)
 
   type=type.lower()
   a=(cursor.execute("SELECT event FROM event_list WHERE type = ?", (type,)).fetchall())
@@ -162,7 +160,6 @@ def total_type_attendance(type):
   #Returns a list of attendance for a type
   connection = sqlite3.connect("database.db")
   cursor = connection.cursor()
-  #print("All counts for events for type :"+type)
 
   type=type.lower()
   a=(cursor.execute("SELECT event FROM event_list WHERE type = ?", (type,)).fetchall())
@@ -184,7 +181,6 @@ def average_type_attendance(type):
   #Returns a list of attendance for a type
   connection = sqlite3.connect("database.db")
   cursor = connection.cursor()
-  #print("All counts for events for type :"+type)
 
   type=type.lower()
   a=(cursor.execute("SELECT event FROM event_list WHERE type = ?", (type,)).fetchall())
@@ -208,7 +204,6 @@ def types_events(type):
   #Returns a list of events which are a type
   connection = sqlite3.connect("database.db")
   cursor = connection.cursor()
-  #print("All counts for events for type :"+type)
 
   type=type.lower()
 
@@ -293,31 +288,21 @@ def all_usernames():
   return(a)
 def new_event(name, type):
   #Inserts a new event into the database. Take the name and type and creates a unique ID
-  date=datetime.today().strftime('%m-%d-%Y')
+  date=datetime.datetime.now().strftime('%m-%d-%Y')
 
   a=True
   i=1
   while(a==True):
-    print("--Looped through while loop again")
     append="-"+str(i)
-    print("=======")
-    print(date+append)
-    print("i:", i)
-    print(does_event_exist(date+append))
-    if does_event_exist(date+append)==True:
-      print("does_event_exist is True")
-  
+    if does_event_exist(date+append)==True:  
       i+=1
     else:
       date=str(date)
       append=(str(append))
       new_event_id=(str(date)+str(append))
-      print("append:", append)
 
       connection = sqlite3.connect("database.db")
       cursor = connection.cursor()
-
-      print("GOING TO CREATE", new_event_id, "\n\n\n\n\n\n")
 
       cursor.execute("INSERT INTO event_list(event,type,name) VALUES('"+new_event_id+"','"+type+"','"+name+"');")
       cursor.execute("CREATE TABLE '"+new_event_id+"'(ID text);")
@@ -326,7 +311,7 @@ def new_event(name, type):
       connection.close()
 
       a=False
-    if (i>100):
+    if (i>1000):
       print("Loop broken. Exiting")
       a=False
 def delete_event(event):
@@ -336,7 +321,18 @@ def delete_event(event):
       cursor.execute("DELETE FROM event_list WHERE event='"+event+"';")
       connection.commit()
       connection.close()
+def return_all_students():
+  #Returns the number of students from school_details
+  connection = sqlite3.connect("database.db")
+  cursor = connection.cursor()
+  a=(cursor.execute("SELECT * FROM IDs;").fetchall())
+  connection.close()
 
+  return(a)
+
+@app.route('/favicon.ico')
+def favicon():
+  return url_for(filename='favicon.ico')
 
 @app.route('/')
 def index():
@@ -355,7 +351,6 @@ def index():
 @app.errorhandler(404)
 def not_found(l):
   return render_template("404.html")
-  #Return to log in?
 
 @app.route('/error')
 def error():
@@ -371,7 +366,6 @@ def login():
 
   if 'username' in session:
 
-    print(session)
     if (session['type'] == "admin"):
       return redirect(url_for('admin'))
     elif (session['type'] == "viewer"):
@@ -402,10 +396,11 @@ def login():
 
     if saved_hash == password:
       session['username'] = username
+      log(username+" logged in")
       session['password'] = password
       session['type'] = account_type
-      print(session)
       if (session['type'] == "admin"):
+        log(username+" logged in as "+account_type)
         return redirect(url_for('admin'))
       elif (session['type'] == "viewer"):
         return redirect(url_for('view'))
@@ -423,13 +418,37 @@ def login():
     return redirect(url_for('error'))
   return render_template('login.html')
 
+global admin_jinja_message
+global admin_jinja_message_2
+global admin_toggle_message
+
+admin_jinja_message=""
+admin_jinja_message_2=""
+admin_toggle_message=False
+
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
-  if (session['type'] == "viewer"):
-    return redirect(url_for('view'))
-  elif (session['type'] == "uploader"):
-    return redirect(url_for('upload'))
+  global admin_jinja_message
+  global admin_jinja_message_2
+  global admin_toggle_message
 
+  if admin_toggle_message==False:
+    admin_jinja_message=""
+    admin_jinja_message_2=""
+  else:
+    admin_toggle_message=False 
+
+  if 'username' in session:
+    if (session['type'] == "admin"):
+      pass
+    elif (session['type'] == "viewer"):
+      return redirect(url_for('view'))
+    elif (session['type'] == "uploader"):
+      return redirect(url_for('upload'))
+    else:
+      return redirect(url_for('error'))
+  else:
+    return redirect(url_for('login'))
 
   connection = sqlite3.connect("database.db")
   cursor = connection.cursor()
@@ -439,88 +458,133 @@ def admin():
 
   if request.method == 'POST':
     usernames=all_usernames()
-    print(request.form)
     if request.form.get("user_to_change") != None:
+      #Change password for user
+      log(request.form.get('user_to_change')+"'s password was changed")
       connection = sqlite3.connect("database.db")
       cursor = connection.cursor()
-
-      print("UPDATE auth SET password = ? WHERE username="+request.form.get('user_to_change')+";")
       cursor.execute("UPDATE auth SET hash = ? WHERE username='"+request.form.get('user_to_change')+"';", (request.form.get("new_password"),))
-
-      
-
-
-
       connection.commit()
       connection.close()
+      admin_toggle_message=True
+      admin_jinja_message="changed_password"
+      admin_jinja_message_2=request.form.get("user_to_change")
     if request.form.get('regenerate_points') == 'regenerate_points':
       # Sets all student points to zero
+      log("All student points were reset to zero")
       reset_students()
+      admin_toggle_message=True
+      admin_jinja_message="reset_students"
     if request.form.get('username') != None:
       #Create new user
       newuser_username = request.form['username']
       newuser_password = request.form['password']
       newuser_type = request.form['type']
-
+      log(newuser_username+" was created")
       connection = sqlite3.connect("database.db")
       cursor = connection.cursor()
       cursor.execute("INSERT INTO auth (username, hash, type) VALUES ('"+newuser_username+"', '"+newuser_password+"', '"+newuser_type+"');")
       connection.commit()
       connection.close()
+      admin_toggle_message=True
+      admin_jinja_message="created_account"
+      admin_jinja_message_2=newuser_username
     for i in usernames:
+      #Delete user
       if 'delete_user_'+i in request.form:
+        log(i+" was deleted")
         connection = sqlite3.connect("database.db")
         cursor = connection.cursor()
         cursor.execute('DELETE FROM auth WHERE username=?', (i,))
         connection.commit()
         connection.close()
+        admin_toggle_message=True
+        admin_jinja_message="deleted_user"
+        admin_jinja_message_2=i
     return redirect(url_for('admin'))
-       
+    
   f=open("log.txt", "r")
-  log=f.readlines()
+  llog=f.readlines()
   f.close()
 
-  return render_template('admin.html', accounts=accounts, users=all_usernames(), log=log)
-  
+  return render_template('admin.html', accounts=accounts, users=all_usernames(), log=llog, jinja_message=admin_jinja_message, jinja_message_2=admin_jinja_message_2)
+
+global events_jinja_message
+global events_jinja_message_2
+global events_toggle_message
+
+events_jinja_message=""
+events_jinja_message_2=""
+events_toggle_message=False
+
 @app.route('/events', methods=['GET', 'POST'])
 def events():
-  types = ["Sport", "Rally", "Musical", "Theatre", "Other"]
+  global events_jinja_message
+  global events_jinja_message_2
+  global events_toggle_message
 
-  
-  if (session['type'] == "uploader"):
-    return redirect(url_for('upload'))
 
-  if request.method == 'POST':
-    if 'event_type' in request.form:
-      print("Creating new event")
+  if events_toggle_message==False:
+    events_jinja_message=""
+    events_jinja_message_2=""
+  else:
+    events_toggle_message=False
 
-      new_event_name = request.form['event_name']
-      new_event_type = request.form['event_type']
-
-      new_event(new_event_name, new_event_type)
-    if "new_active_event" in request.form:
-      change_active_event(request.form['new_active_event'])
-
-    for i in request.form:
-      if "delete_event_" in i:
-        to_delete=(i[13:])
-        delete_event(to_delete)
-      
-
+  if 'username' in session:
+    if (session['type'] == "admin"):
+      pass
+    elif (session['type'] == "viewer"):
+      pass
+    elif (session['type'] == "uploader"):
+      return redirect(url_for('upload'))
+    else:
+      return redirect(url_for('error'))
+  else:
+    return redirect(url_for('login'))
 
   connection = sqlite3.connect("database.db")
   cursor = connection.cursor()
   cursor.execute('SELECT * FROM event_list')
   events = cursor.fetchall()
   connection.close()
+  
+  types = ["Sport", "Rally", "Musical", "Theatre", "Other"]
+  if request.method == 'POST':
+    if 'event_type' in request.form:
+      #Create a new event
+      new_event_name = request.form['event_name']
+      new_event_type = request.form['event_type']
+      log(new_event_name+" event was created")
+      new_event(new_event_name, new_event_type)
+      events_toggle_message=True
+      events_jinja_message="create_event"
+      events_jinja_message_2=new_event_name
+    elif "new_active_event" in request.form:
+      #Change active event
+      change_active_event(request.form['new_active_event'])
+      log(request.form['new_active_event']+" was changed to the active event")
+      events_toggle_message=True
+      events_jinja_message="change_active_event"
+      events_jinja_message_2=request.form['new_active_event']
+    for i in request.form:
+      #Delete event
+      if "delete_event_" in i:
+        to_delete=(i[13:])
+        log(to_delete+" was deleted")
+        delete_event(to_delete)
+        events_toggle_message=True
+        events_jinja_message="delete_event"
+        events_jinja_message_2=to_delete
+    return redirect(url_for('events'))
+      
 
-  return render_template('events.html', events=events, types=types, active_event=active_event()[1:-1])
+
+
+
+  return render_template('events.html', events=events, types=types, active_event=active_event()[1:-1], jinja_message=events_jinja_message, jinja_message_2=events_jinja_message_2)
 
 @app.route('/report', methods=['GET', 'POST'])
 def view():
-  types = ["Sport", "Rally", "Musical", "Theatre", "Other"]
-
-
 
   if 'type' in session:
     if (session['type'] == "admin"):
@@ -534,7 +598,8 @@ def view():
   else:
     return redirect(url_for('login'))
 
-  
+  types = ["Sport", "Rally", "Musical", "Theatre", "Other"]
+
   global population_event
   global active_type
   global active_grade
@@ -585,16 +650,27 @@ def view():
 
   #Bar chart to display each event with a dropdown menu to change the grade which is displayed (by number of attendance)
   grades=[9, 10, 11, 12]
-  print(names)
 
   title_name=names[events.index(population_event)]
-  print(title_name)
-
-
   return render_template('view.html', top_earners_x=top_earners_names, top_earners_y=top_earners_points, attendance_x=[attendance, remaining], events=zip(events, names), population_event=population_event, types=types, active_type=active_type, events_type_x=types_events(active_type), events_type_y=type_attendance(active_type), events_x=list_event_names(), events_y=count_events(), percentage_types_x=types, percentage_types_y=percentage_types, grade_events_list_x=list_event_names(), grade_events_list_y=count_events_grade(active_grade), grade_events_list_grade=active_grade, grades=grades, active_grade=int(active_grade), grade_points_y=grade_points(), grade_points_data=grade_points(), student_points=student_points(), student_names=student_names(), title_name=title_name)
 
 @app.route('/winners', methods=['GET', 'POST'])
 def winner():
+
+  if 'username' in session:
+    if (session['type'] == "admin"):
+      pass
+    elif (session['type'] == "viewer"):
+      pass
+    elif (session['type'] == "uploader"):
+      return redirect(url_for('upload'))
+    else:
+      return redirect(url_for('error'))
+  else:
+    return redirect(url_for('login'))
+
+
+
   global student
   global random_winner
   global random_winner_each_grade
@@ -612,9 +688,12 @@ def winner():
     if request.form.get('generate_student') == 'generate_student':
       # Pass the single student
       random_winner=randomm_winner()
+      #jinja_message="single_student"
     elif  request.form.get('generate_students') == 'generate_students':
       # Pass the students
-      random_winner_each_grade=randomm_winner_each_grade()   
+      random_winner_each_grade=randomm_winner_each_grade()
+      #jinja_message="multiple_students"
+
     #return redirect(url_for('winner'))   
 
 
@@ -626,18 +705,25 @@ def winner():
     results = cursor.fetchall()
     connection.close()
 
-  return render_template('winners.html', results=results, single_winner=random_winner, all_winners=random_winner_each_grade)
+  return render_template('winners.html', results=results, single_winner=random_winner, all_winners=random_winner_each_grade, students=return_all_students())
 
 @app.route('/scan', methods=['GET', 'POST'])
 def upload():
+  jinja_message=""
 
-  if 'username' not in session:
+  if 'username' in session:
+    if (session['type'] == "admin"):
+      pass
+    elif (session['type'] == "viewer"):
+      return redirect(url_for('report'))
+    elif (session['type'] == "uploader"):
+      pass
+    else:
+      return redirect(url_for('error'))
+  else:
     return redirect(url_for('login'))
-  if (session['type'] == "viewer"):
-    return redirect(url_for('view'))
 
   id = request.args.get('id')
-  print(request.form)
 
   if id != "None":
 
@@ -646,10 +732,10 @@ def upload():
 
     cursor.execute("insert into "+active_event()+" values(?);", (id,))
     cursor.execute("UPDATE IDs SET points = points + 1 WHERE id = ?;", (id,))
+    jinja_message=cursor.execute("SELECT name FROM IDs WHERE id = ?;", (id,)).fetchone()
     connection.commit()
     connection.close()
-
-  return render_template('scan.html')
+  return render_template('scan.html', jinja_message=jinja_message)
 
 @app.route('/logout')
 def logout():
@@ -661,9 +747,4 @@ def logout():
   return redirect(url_for('index')) #Add an alert that pops up when you log out
 
 
-
-
-
-app.run(host='0.0.0.0', port=5003)
-
-
+app.run(host='0.0.0.0', port=5005)
