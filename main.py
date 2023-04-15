@@ -746,5 +746,4 @@ def logout():
 
   return redirect(url_for('index')) #Add an alert that pops up when you log out
 
-
 app.run(host='0.0.0.0', port=5005)
