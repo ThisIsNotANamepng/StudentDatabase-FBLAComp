@@ -580,7 +580,7 @@ def events():
 
 
 
-  return render_template('events.html', events=events, types=types, active_event=active_event()[1:-1], jinja_message=events_jinja_message, jinja_message_2=events_jinja_message_2)
+  return render_template('events.html', events=events, types=types, active_event=active_event()[1:-1], jinja_message=events_jinja_message, jinja_message_2=events_jinja_message_2, session_type=session['type'])
 
 @app.route('/report', methods=['GET', 'POST'])
 def view():
@@ -651,7 +651,7 @@ def view():
   grades=[9, 10, 11, 12]
 
   title_name=names[events.index(population_event)]
-  return render_template('view.html', top_earners_x=top_earners_names, top_earners_y=top_earners_points, attendance_x=[attendance, remaining], events=zip(events, names), population_event=population_event, types=types, active_type=active_type, events_type_x=types_events(active_type), events_type_y=type_attendance(active_type), events_x=list_event_names(), events_y=count_events(), percentage_types_x=types, percentage_types_y=percentage_types, grade_events_list_x=list_event_names(), grade_events_list_y=count_events_grade(active_grade), grade_events_list_grade=active_grade, grades=grades, active_grade=int(active_grade), grade_points_y=grade_points(), grade_points_data=grade_points(), student_points=student_points(), student_names=student_names(), title_name=title_name)
+  return render_template('view.html', top_earners_x=top_earners_names, top_earners_y=top_earners_points, attendance_x=[attendance, remaining], events=zip(events, names), population_event=population_event, types=types, active_type=active_type, events_type_x=types_events(active_type), events_type_y=type_attendance(active_type), events_x=list_event_names(), events_y=count_events(), percentage_types_x=types, percentage_types_y=percentage_types, grade_events_list_x=list_event_names(), grade_events_list_y=count_events_grade(active_grade), grade_events_list_grade=active_grade, grades=grades, active_grade=int(active_grade), grade_points_y=grade_points(), grade_points_data=grade_points(), student_points=student_points(), student_names=student_names(), title_name=title_name, session_type=session['type'])
 
 @app.route('/winners', methods=['GET', 'POST'])
 def winner():
@@ -702,7 +702,7 @@ def winner():
     results = cursor.fetchall()
     connection.close()
 
-  return render_template('winners.html', results=results, single_winner=random_winner, all_winners=random_winner_each_grade, students=return_all_students())
+  return render_template('winners.html', results=results, single_winner=random_winner, all_winners=random_winner_each_grade, students=return_all_students(), session_type=session['type'])
 
 @app.route('/scan', methods=['GET', 'POST'])
 def upload():
@@ -732,7 +732,7 @@ def upload():
     jinja_message=cursor.execute("SELECT name FROM IDs WHERE id = ?;", (id,)).fetchone()
     connection.commit()
     connection.close()
-  return render_template('scan.html', jinja_message=jinja_message)
+  return render_template('scan.html', jinja_message=jinja_message, session_type=session['type'])
 
 @app.route('/logout')
 def logout():

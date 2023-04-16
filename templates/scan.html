@@ -24,7 +24,12 @@
         {% endif %}
       </div>
 
-      <a style="background-color: #669BBC;" class="uk-position-top-right uk-button uk-button-primary" href="/logout">Log out</a>
+      <div class="uk-container uk-position-top-right">
+        {% if session_type=="admin" %}
+        <a style="background-color: #669BBC;" class="uk-button uk-button-primary" href="/admin">Admin</a>
+        {% endif %}
+        <a style="background-color: #669BBC;" class="uk-button uk-button-primary" href="/logout">Log out</a>
+      </div>
       <div class="uk-container uk-position-center">
         <div class="uk-container uk-text-center"><h1 class="uk-align-center">Scan</h1></div>
         <!--<h3>I need a color pallette</h3>-->
