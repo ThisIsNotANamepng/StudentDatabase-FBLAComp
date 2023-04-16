@@ -1,0 +1,8 @@
+
+2023-04-16 08:39:48.118555 - it@oasd.org logged in
+2023-04-16 08:39:48.118977 - it@oasd.org logged in as admin
+2023-04-16 08:40:53.293346 - e event was created
+2023-04-16 09:21:34.251394 - principle@oasd.org logged in
+2023-04-16 09:22:13.753392 - it@oasd.org logged in
+2023-04-16 09:22:13.754807 - it@oasd.org logged in as admin
+2023-04-16 09:22:58.261115 - Can you see this? event was created

@@ -5,12 +5,11 @@ import random
 import itertools
 import datetime 
 import time
-# Ask Finke: return redirect, delete event
 
 #  python3.11 -m venv fbla
 #  source env/bin/activate
 app = Flask(__name__)
-app.secret_key = b'm#HS3ZyNqPNj$sga7QJVd66d!TjT6Kzr'
+app.secret_key = b'm#HS3Zy57d$^&fvNqPNj$sga7QJ^*fd66d!TjT6Kzr'
 def log(to_log):
   to_log="\n"+str(datetime.datetime.now())+" - "+to_log
 
@@ -668,8 +667,6 @@ def winner():
       return redirect(url_for('error'))
   else:
     return redirect(url_for('login'))
-
-
 
   global student
   global random_winner
