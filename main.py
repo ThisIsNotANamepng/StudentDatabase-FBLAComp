@@ -11,12 +11,14 @@ import time
 app = Flask(__name__)
 app.secret_key = b'm#HS3Zy57d$^&fvNqPNj$sga7QJ^*fd66d!TjT6Kzr'
 def log(to_log):
+  #Adds to_log into the server log
   to_log="\n"+str(datetime.datetime.now())+" - "+to_log
 
   f=open("log.txt", "a")
   f.write(to_log)
   f.close()
 def does_event_exist(id):
+  #Returns True or False whether id exists in event_list
   connection = sqlite3.connect("database.db")
   cursor = connection.cursor()
 
@@ -28,8 +30,8 @@ def does_event_exist(id):
     return(False)#Maybe does the id append notmiterate up
   return(True)
 def change_active_event(new_event):
-  new_event="'"+new_event+"'"
   #Changes the current events that the scanner page enters into
+  new_event="'"+new_event+"'"
   connection = sqlite3.connect("database.db")
   cursor = connection.cursor()
 
@@ -139,9 +141,8 @@ def type_attendance(type):
   connection = sqlite3.connect("database.db")
   cursor = connection.cursor()
 
-  type=type.lower()
+  type=type.lower().capitalize()
   a=(cursor.execute("SELECT event FROM event_list WHERE type = ?", (type,)).fetchall())
-
 
   i=0
   while (i<len(a)):
@@ -156,7 +157,7 @@ def type_attendance(type):
 
   return(counts)
 def total_type_attendance(type):
-  #Returns a list of attendance for a type
+  #Returns a total of attendance for a type
   connection = sqlite3.connect("database.db")
   cursor = connection.cursor()
 
@@ -181,7 +182,7 @@ def average_type_attendance(type):
   connection = sqlite3.connect("database.db")
   cursor = connection.cursor()
 
-  type=type.lower()
+  type=type.lower().capitalize()
   a=(cursor.execute("SELECT event FROM event_list WHERE type = ?", (type,)).fetchall())
   if a==[]:
     return(0)
@@ -204,10 +205,9 @@ def types_events(type):
   connection = sqlite3.connect("database.db")
   cursor = connection.cursor()
 
-  type=type.lower()
+  type=type.lower().capitalize()
 
-  a=(cursor.execute("SELECT event FROM event_list WHERE type = ?", (type,)).fetchall())
-
+  a=(cursor.execute("SELECT name FROM event_list WHERE type = ?", (type,)).fetchall())
 
   i=0
   while (i<len(a)):
@@ -258,7 +258,7 @@ def student_names():
     i+=1
   return(a)
 def student_points():
-  #Returns a list of all of the student names
+  #Returns a list of all of the student points
   connection = sqlite3.connect("database.db")
   cursor = connection.cursor()
   a=(cursor.execute("SELECT points FROM IDs").fetchall())
@@ -269,6 +269,7 @@ def student_points():
     i+=1
   return(a)
 def reset_students():
+  #Resets all student points to zero
   connection = sqlite3.connect("database.db")
   cursor = connection.cursor()
   cursor.execute('UPDATE IDs SET points = 0')
@@ -314,12 +315,13 @@ def new_event(name, type):
       print("Loop broken. Exiting")
       a=False
 def delete_event(event):
-      connection = sqlite3.connect("database.db")
-      cursor = connection.cursor()
-      cursor.execute("DROP TABLE '"+event+"';")
-      cursor.execute("DELETE FROM event_list WHERE event='"+event+"';")
-      connection.commit()
-      connection.close()
+  #Deletes event and data asscoiated with it. Deletes the table and removes it from event_list
+  connection = sqlite3.connect("database.db")
+  cursor = connection.cursor()
+  cursor.execute("DROP TABLE '"+event+"';")
+  cursor.execute("DELETE FROM event_list WHERE event='"+event+"';")
+  connection.commit()
+  connection.close()
 def return_all_students():
   #Returns the number of students from school_details
   connection = sqlite3.connect("database.db")
@@ -331,10 +333,12 @@ def return_all_students():
 
 @app.route('/favicon.ico')
 def favicon():
+  #Returns favicon
   return url_for(filename='favicon.ico')
 
 @app.route('/')
 def index():
+  #Redirects to user's correct page
   if 'type' in session:
     if (session['type'] == "admin"):
       return redirect(url_for('admin'))
@@ -353,15 +357,18 @@ def not_found(l):
 
 @app.route('/error')
 def error():
+  log("Rediercted to error page")
   return("Well this is embarrassing, something went wrong internally")
-  #Log this in a log where the admins can read it
 
 @app.route('/help')
 def help():
+  #Help page
+
   return(render_template('help.html'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+  #Login page
 
   if 'username' in session:
 
@@ -375,24 +382,24 @@ def login():
       return redirect(url_for('error'))
   
   
-
+  #If the request is the result of page controls
   if request.method == 'POST':
     username = request.form['username']
     password = request.form['password']
     connection = sqlite3.connect("database.db")
     cursor = connection.cursor()
   
-    # Refresh if account doesn't exist
+    # Redirect with an error code if account doesn't exist
     if len(cursor.execute("SELECT username FROM auth WHERE lower(username) = ?", (username.lower(),)).fetchall()) == 0:
       return redirect('/login?error=invalid')
       
-    #Data from the database is seperated with underline
+    #Searching the database for the username and password
     saved_hash = cursor.execute("SELECT hash FROM auth WHERE lower(username) = ?", (username.lower(),)).fetchall()[0][0]
     saved_username = cursor.execute("SELECT username FROM auth WHERE lower(username) = ?", (username.lower(),)).fetchall()[0][0]
     account_type = cursor.execute("SELECT type FROM auth WHERE lower(username) = ?", (username.lower(),)).fetchall()[0][0]
     connection.close()
     
-
+    #If the password in the database matched the one requested
     if saved_hash == password:
       session['username'] = username
       log(username+" logged in")
@@ -417,6 +424,9 @@ def login():
     return redirect(url_for('error'))
   return render_template('login.html')
 
+#global variables are required for success or error messages
+#jinja_message is the initial success, jinja_message_2 is an optional message for some operations which use a name 
+#If toggle_message is true, the success message is thrown. When it's thrown the toggle is turned to false
 global admin_jinja_message
 global admin_jinja_message_2
 global admin_toggle_message
@@ -541,6 +551,7 @@ def events():
   else:
     return redirect(url_for('login'))
 
+  #Data for the event table
   connection = sqlite3.connect("database.db")
   cursor = connection.cursor()
   cursor.execute('SELECT * FROM event_list')
@@ -548,6 +559,7 @@ def events():
   connection.close()
   
   types = ["Sport", "Rally", "Musical", "Theatre", "Other"]
+  #If the request is the result of page controls
   if request.method == 'POST':
     if 'event_type' in request.form:
       #Create a new event
@@ -575,15 +587,12 @@ def events():
         events_jinja_message="delete_event"
         events_jinja_message_2=to_delete
     return redirect(url_for('events'))
-      
-
-
-
 
   return render_template('events.html', events=events, types=types, active_event=active_event()[1:-1], jinja_message=events_jinja_message, jinja_message_2=events_jinja_message_2, session_type=session['type'])
 
 @app.route('/report', methods=['GET', 'POST'])
 def view():
+  #The page to view analytics
 
   if 'type' in session:
     if (session['type'] == "admin"):
@@ -602,42 +611,44 @@ def view():
   global population_event
   global active_type
   global active_grade
+
+  #Total students
   total = num_students()
-
   
-  if (session['type'] == "uploader"):
-    return redirect(url_for('upload'))
-  
-
+  #Default values
   population_event=active_event()
   active_type="rally"
   active_grade=12
   
-  
-  
+  #If the request was the result of controls on the page
   if request.method == 'POST':
+    #Event picker
     if 'event' in request.form:
       population_event = request.form['event']
+    #Type picker
     if 'type' in request.form:
       active_type = request.form['type']
+    #Grade picker
     if 'grade' in request.form:
       active_grade = request.form['grade']   
 
-
-  
   top_earners_names = [top_three_earners()[0][0], top_three_earners()[1][0], top_three_earners()[2][0]]
   top_earners_points = [top_three_earners()[0][3], top_three_earners()[1][3], top_three_earners()[2][3]]
 
-
+  #If the population_event is surrounded by ', get rid of them
   if "'" in population_event:
     population_event=population_event[1:-1]
 
+  #Number of students attending the event
   attendance = count_events()[list_events().index(population_event)]
+
+  #Number of students not attending the event
   remaining = total-attendance
 
-  #type_attendance = type_attendance()
-
+  #A list of all event IDs
   events = (list_events())
+
+  #A list of all event names
   names = (list_event_names())
 
 
@@ -645,16 +656,19 @@ def view():
   #Bar chart with types of events %wise
   percentage_types=[]
   for i in types:
-    percentage_types.append(average_type_attendance(i)/total)
+    percentage_types.append((average_type_attendance(i)/total)*100)
 
   #Bar chart to display each event with a dropdown menu to change the grade which is displayed (by number of attendance)
   grades=[9, 10, 11, 12]
 
+  #The name of the current population event
   title_name=names[events.index(population_event)]
+
   return render_template('view.html', top_earners_x=top_earners_names, top_earners_y=top_earners_points, attendance_x=[attendance, remaining], events=zip(events, names), population_event=population_event, types=types, active_type=active_type, events_type_x=types_events(active_type), events_type_y=type_attendance(active_type), events_x=list_event_names(), events_y=count_events(), percentage_types_x=types, percentage_types_y=percentage_types, grade_events_list_x=list_event_names(), grade_events_list_y=count_events_grade(active_grade), grade_events_list_grade=active_grade, grades=grades, active_grade=int(active_grade), grade_points_y=grade_points(), grade_points_data=grade_points(), student_points=student_points(), student_names=student_names(), title_name=title_name, session_type=session['type'])
 
 @app.route('/winners', methods=['GET', 'POST'])
 def winner():
+  #The page where viewers can pick winners
 
   if 'username' in session:
     if (session['type'] == "admin"):
@@ -672,28 +686,21 @@ def winner():
   global random_winner
   global random_winner_each_grade
 
-  #The page where viewers can pick winners
-
-  #Pick a winner for each grade
-  #Search for students to get their points (and which events they attended?)
-  #Ability to add a student to an event
+  #Deafult values
   random_winner=""
   random_winner_each_grade=""
   results=""
 
+  #If the request is the result of a controls on the page
   if request.method == 'POST':
+    #Generates random student
     if request.form.get('generate_student') == 'generate_student':
-      # Pass the single student
       random_winner=randomm_winner()
-      #jinja_message="single_student"
+    #Generates random student from each grade
     elif  request.form.get('generate_students') == 'generate_students':
-      # Pass the students
       random_winner_each_grade=randomm_winner_each_grade()
-      #jinja_message="multiple_students"
 
-    #return redirect(url_for('winner'))   
-
-
+  #Search bar
   if 'query' in request.form:
     query = request.form['query']
     connection = sqlite3.connect("database.db")
@@ -706,6 +713,9 @@ def winner():
 
 @app.route('/scan', methods=['GET', 'POST'])
 def upload():
+  #The page where a scanner can scan an ID
+  
+  #Default value
   jinja_message=""
 
   if 'username' in session:
@@ -720,15 +730,20 @@ def upload():
   else:
     return redirect(url_for('login'))
 
+  #Get the id in the request
   id = request.args.get('id')
 
+  #If there really is an id in the request
   if id != "None":
 
     connection = sqlite3.connect("database.db")
     cursor = connection.cursor()
 
+    #Insert the ID into the active event
     cursor.execute("insert into "+active_event()+" values(?);", (id,))
+    #Give student a point
     cursor.execute("UPDATE IDs SET points = points + 1 WHERE id = ?;", (id,))
+    #Name for return message
     jinja_message=cursor.execute("SELECT name FROM IDs WHERE id = ?;", (id,)).fetchone()
     connection.commit()
     connection.close()
@@ -736,11 +751,12 @@ def upload():
 
 @app.route('/logout')
 def logout():
-  # remove the username from the session if it's there
+  #Removes all cookies
   session.pop('username', None)
   session.pop('password', None)
   session.pop('type', None)
 
-  return redirect(url_for('index')) #Add an alert that pops up when you log out
+  #Take you back to start
+  return redirect(url_for('index'))
 
 app.run(host='0.0.0.0', port=5005)
