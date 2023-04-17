@@ -74,16 +74,6 @@
         <div class="uk-card uk-card-default uk-card-body"><canvas id="student_list" width="800" height="450"></canvas></div>
     </div>
 
-
-
-
-
-
-    
-
-
-
-
     <script>
         //Top Three Earners
         new Chart(document.getElementById("top-earners"), {
@@ -100,11 +90,18 @@
             ]
             },
             options: {
-            legend: { display: false },
-            title: {
-                display: true,
-                text: 'Top Point Earners'
-            }
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                },
+                legend: { display: false },
+                title: {
+                    display: true,
+                    text: 'Top Point Earners'
+                }
             }
         });
 
@@ -165,8 +162,8 @@
             labels: {{ events_x|tojson }},
             datasets: [
                 {
-                label: "Points",
-                backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f"],
+                label: "Attended",
+                backgroundColor: [],
                 data: {{ events_y|tojson }},
                 },
 
@@ -183,7 +180,7 @@
                 legend: { display: true },
                 title: {
                     display: true,
-                    text: 'Attendance'
+                    text: 'Students attended'
                 }
             }
         });
@@ -194,8 +191,8 @@
             labels: {{ percentage_types_x|tojson }},
             datasets: [
                 {
-                label: "Points",
-                backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f"],
+                label: "Percentage",
+                backgroundColor: [],
                 data: {{ percentage_types_y|tojson }},
                 },
 
@@ -212,7 +209,7 @@
                 legend: { display: true },
                 title: {
                     display: true,
-                    text: 'Attendance'
+                    text: 'Percent attendance by type'
                 }
             }
         });
@@ -224,7 +221,7 @@
             datasets: [
                 {
                 label: "Points",
-                backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f"],
+                backgroundColor: [],
                 data: {{ grade_events_list_y|tojson }},
                 },
 
@@ -241,7 +238,7 @@
                 legend: { display: true },
                 title: {
                     display: true,
-                    text: {{ grade_events_list_grade|tojson }}
+                    text: '{{ grade_events_list_grade|tojson }}th grade attendance'
                 }
             }
         });
@@ -253,7 +250,7 @@
             labels: {{ grades|tojson }},
             datasets: [
                 {
-                label: "Points",
+                label: "Students attended",
                 backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f"],
                 data: {{ grade_points_y|tojson }},
                 },
@@ -291,7 +288,7 @@
             options: {
             title: {
                 display: true,
-                text: 'Points by Grade '
+                text: 'Points by Grade'
             }
             }
         });

@@ -7,3 +7,67 @@
 2023-04-16 09:22:13.754807 - it@oasd.org logged in as admin
 2023-04-16 09:22:58.261115 - Can you see this? event was created
 2023-04-16 12:49:31.263023 - principle@oasd.org logged in
+2023-04-16 13:02:12.162481 - 04-14-2023-1 was changed to the active event
+2023-04-16 13:02:39.145077 - 04-14-2023-2 was changed to the active event
+2023-04-16 13:02:56.417821 - 04-14-2023-3 was changed to the active event
+2023-04-16 13:03:15.478359 - 04-14-2023-4 was changed to the active event
+2023-04-16 13:03:41.673684 - 04-14-2023-5 was changed to the active event
+2023-04-16 13:03:55.503452 - 04-14-2023-7 was changed to the active event
+2023-04-16 13:04:10.051770 - 04-14-2023-8 was changed to the active event
+2023-04-16 13:04:33.031163 - 04-14-2023-9 was changed to the active event
+2023-04-16 13:04:47.766308 - 04-14-2023-10 was changed to the active event
+2023-04-16 13:05:05.825287 - 04-16-2023-1 was deleted
+2023-04-16 13:05:10.833218 - 04-16-2023-2 was deleted
+2023-04-16 13:13:26.868950 - 04-14-2023-1 was changed to the active event
+2023-04-16 13:14:00.751064 - 04-14-2023-2 was changed to the active event
+2023-04-16 13:14:16.332845 - 04-14-2023-3 was changed to the active event
+2023-04-16 13:14:35.953307 - 04-14-2023-4 was changed to the active event
+2023-04-16 13:14:52.728276 - 04-14-2023-5 was changed to the active event
+2023-04-16 13:15:05.983150 - 04-14-2023-6 was changed to the active event
+2023-04-16 13:15:24.220281 - 04-14-2023-7 was changed to the active event
+2023-04-16 13:15:46.391168 - 04-14-2023-8 was changed to the active event
+2023-04-16 13:16:04.576701 - 04-14-2023-9 was changed to the active event
+2023-04-16 13:16:18.600681 - 04-14-2023-10 was changed to the active event
+2023-04-16 13:17:38.550805 - 04-14-2023-1 was deleted
+2023-04-16 13:17:40.940459 - 04-14-2023-2 was deleted
+2023-04-16 13:17:43.070515 - 04-14-2023-3 was deleted
+2023-04-16 13:17:45.256160 - 04-14-2023-4 was deleted
+2023-04-16 13:17:47.148202 - 04-14-2023-5 was deleted
+2023-04-16 13:17:49.232272 - 04-14-2023-6 was deleted
+2023-04-16 13:17:51.152668 - 04-14-2023-7 was deleted
+2023-04-16 13:17:53.248940 - 04-14-2023-8 was deleted
+2023-04-16 13:17:55.122744 - 04-14-2023-9 was deleted
+2023-04-16 13:17:57.147981 - 04-14-2023-10 was deleted
+2023-04-16 13:21:26.623186 - All student points were reset to zero
+2023-04-16 13:22:05.807704 - April 14 Prom Rally event was created
+2023-04-16 13:22:20.504657 - April 14 Prom event was created
+2023-04-16 13:22:23.137742 - 04-16-2023-2 was changed to the active event
+2023-04-16 13:22:53.433747 - 04-16-2023-1 was changed to the active event
+2023-04-16 13:23:16.093221 - Into The Woods Showing 1 event was created
+2023-04-16 13:23:37.995059 - Into The Woods Showing 2 event was created
+2023-04-16 13:23:56.169272 - Into The Woods Showing 3 event was created
+2023-04-16 13:24:22.596039 - March 31 Pep Rally event was created
+2023-04-16 13:24:48.557133 - March 12 Basketball Game event was created
+2023-04-16 13:25:12.034709 - March 17 Hockey Game event was created
+2023-04-16 13:25:40.501195 - Febuary 7 Tennis Match event was created
+2023-04-16 13:26:07.696526 - April 1 Band Concert event was created
+2023-04-16 13:26:54.476445 - All student points were reset to zero
+2023-04-16 13:27:49.345977 - 04-16-2023-1 was deleted
+2023-04-16 13:28:04.174035 - April 13 Prom Rally event was created
+2023-04-16 13:28:18.757538 - March 14 Choir Concert event was created
+2023-04-16 13:28:34.272507 - Teacher Appreciation Day event was created
+2023-04-16 13:28:43.173101 - 04-16-2023-2 was changed to the active event
+2023-04-16 13:28:58.248266 - 04-16-2023-3 was changed to the active event
+2023-04-16 13:29:09.525356 - 04-16-2023-4 was changed to the active event
+2023-04-16 13:29:25.484456 - 04-16-2023-5 was changed to the active event
+2023-04-16 13:29:40.726350 - 04-16-2023-6 was changed to the active event
+2023-04-16 13:29:56.124675 - 04-16-2023-7 was changed to the active event
+2023-04-16 13:30:10.182805 - 04-16-2023-8 was changed to the active event
+2023-04-16 13:30:21.800255 - 04-16-2023-9 was changed to the active event
+2023-04-16 13:30:33.622728 - 04-16-2023-10 was changed to the active event
+2023-04-16 13:30:52.709098 - 04-16-2023-1 was changed to the active event
+2023-04-16 13:31:06.741666 - 04-16-2023-11 was changed to the active event
+2023-04-16 13:31:19.680292 - 04-16-2023-12 was changed to the active event
+2023-04-16 21:51:30.583892 - 04-16-2023-2 was deleted
+2023-04-16 21:51:38.307264 - April 14 Prom event was created
+2023-04-16 21:51:49.478437 - 04-16-2023-2 was changed to the active event

@@ -1,9 +1,26 @@
 <!DOCTYPE html>
 <html>
-<body>
+    <head>
+      <!--In the furture downlaod the js and css files to host on the server for increased privacy and security, for now just use cdn-->
+      <title>Scan | involve</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.16.3/dist/css/uikit.min.css" />
+      <script src="https://cdn.jsdelivr.net/npm/uikit@3.16.3/dist/js/uikit.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/uikit@3.16.3/dist/js/uikit-icons.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js"></script>
+      <link rel="icon" type="image/ico" href="static/favicon.ico">
 
-<h1>404 error</h1>
-<p>Better fire the developer.</p>
+    </head>
+    <body>
+      <style>p, h1, h2, h3, h4 {color: #003049;}</style>
 
-</body>
-</html> 
+      <div class="uk-container uk-position-top-right">
+        {% if session_type=="admin" %}
+        <a style="background-color: #669BBC;" class="uk-button uk-button-primary" href="/admin">Admin</a>
+        {% endif %}
+        <a style="background-color: #669BBC;" class="uk-button uk-button-primary" href="/logout">Log out</a>
+      </div>
+      <div class="uk-container"><h1>404 Error. Logout and login again.</h1></div>"
+    </body>
+</html>
