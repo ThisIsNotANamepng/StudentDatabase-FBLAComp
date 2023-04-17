@@ -5,10 +5,12 @@ import random
 import itertools
 import datetime 
 import time
+import os
 
 #  python3.11 -m venv fbla
 #  source env/bin/activate
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
+
 app.secret_key = b'm#HS3Zy57d$^&fvNqPNj$sga7QJ^*fd66d!TjT6Kzr'
 def log(to_log):
   #Adds to_log into the server log
@@ -334,17 +336,20 @@ def return_all_students():
 @app.route('/favicon.ico')
 def favicon():
   #Returns favicon
-  return url_for(filename='favicon.ico')
+  return send_from_directory(os.path.join(app.root_path, 'static'),
+    'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 @app.route('/')
 def index():
   #Redirects to user's correct page
   if 'type' in session:
+    print("type found")
+    print(session['type'])
     if (session['type'] == "admin"):
       return redirect(url_for('admin'))
     elif (session['type'] == "viewer"):
       return redirect(url_for('view'))
-    elif (session['type'] == "uploader"):
+    elif (session['type'] == "scanner"):
       return redirect(url_for('upload'))
     else:
       return redirect(url_for('error'))
@@ -376,7 +381,7 @@ def login():
       return redirect(url_for('admin'))
     elif (session['type'] == "viewer"):
       return redirect(url_for('view'))
-    elif (session['type'] == "uploader"):
+    elif (session['type'] == "scanner"):
       return redirect(url_for('upload'))
     else:
       return redirect(url_for('error'))
@@ -410,7 +415,7 @@ def login():
         return redirect(url_for('admin'))
       elif (session['type'] == "viewer"):
         return redirect(url_for('view'))
-      elif (session['type'] == "uploader"):
+      elif (session['type'] == "scanner"):
         return redirect(url_for('upload'))
       else:
         return redirect(url_for('error'))
@@ -452,7 +457,7 @@ def admin():
       pass
     elif (session['type'] == "viewer"):
       return redirect(url_for('view'))
-    elif (session['type'] == "uploader"):
+    elif (session['type'] == "scanner"):
       return redirect(url_for('upload'))
     else:
       return redirect(url_for('error'))
@@ -544,7 +549,7 @@ def events():
       pass
     elif (session['type'] == "viewer"):
       pass
-    elif (session['type'] == "uploader"):
+    elif (session['type'] == "scanner"):
       return redirect(url_for('upload'))
     else:
       return redirect(url_for('error'))
@@ -599,7 +604,7 @@ def view():
       pass
     elif (session['type'] == "viewer"):
       pass
-    elif (session['type'] == "uploader"):
+    elif (session['type'] == "scanner"):
       return redirect(url_for('upload'))
     else:
       return redirect(url_for('error'))
@@ -675,7 +680,7 @@ def winner():
       pass
     elif (session['type'] == "viewer"):
       pass
-    elif (session['type'] == "uploader"):
+    elif (session['type'] == "scanner"):
       return redirect(url_for('upload'))
     else:
       return redirect(url_for('error'))
@@ -723,7 +728,7 @@ def upload():
       pass
     elif (session['type'] == "viewer"):
       return redirect(url_for('report'))
-    elif (session['type'] == "uploader"):
+    elif (session['type'] == "scanner"):
       pass
     else:
       return redirect(url_for('error'))
