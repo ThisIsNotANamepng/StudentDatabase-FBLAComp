@@ -1,4 +1,4 @@
-#!/home/jack/code/StudentDatabase-FBLAComp/fbla/bin/python3
+#!/var/home/jack/code/StudentDatabase-FBLAComp/fbla/bin/python3.11
 # -*- coding: utf-8 -*-
 import re
 import sys

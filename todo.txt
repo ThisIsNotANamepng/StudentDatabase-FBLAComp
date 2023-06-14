@@ -1,0 +1,25 @@
+Make cli mangment tools
+	(Maybe just alias commands to run a python file)
+	- Change passwords
+	- Start/Stop server
+	- Diagnostics
+		- Ping each page
+		- Open and close database, create and delete event/user, ensure db isn't locked
+		- 
+	- Backup
+	- Rescue? - Starts server without the database, adds extra options to recover from a database failure
+
+Put into container (advertise docker)
+
+Add students into database
+
+Add students into past events
+
+Add 2fa
+
+Backup
+
+Salt hashes?
+
+
+

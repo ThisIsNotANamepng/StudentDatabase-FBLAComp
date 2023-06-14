@@ -9,11 +9,57 @@
         <script src="https://cdn.jsdelivr.net/npm/uikit@3.16.3/dist/js/uikit-icons.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js"></script>
         <link rel="icon" type="image/ico" href="static/favicon.ico">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.2.0/zxcvbn.js"></script>
 
       </head>
 <body>
     <style>p, h1, h2, h3, h4 {color: #003049;}</style>
-
+    <style>
+        #password-strength {
+          height: 5px;
+          width: 100%;
+          display: block;
+          background-color: #ccc;
+        }
+        #password-strength span {
+          display: block;
+          height: 5px;
+          border-radius: 2px;
+          transition: all 500ms ease;
+        }
+        #password-strength2 {
+          height: 5px;
+          width: 100%;
+          display: block;
+          background-color: #ccc;
+        }
+        #password-strength2 span {
+          display: block;
+          height: 5px;
+          border-radius: 2px;
+          transition: all 500ms ease;
+        }
+        .strength-0 span {
+          background-color: red;
+          width: 5%;
+        }
+        .strength-1 span {
+          background-color: orangered;
+          width: 25%;
+        }
+        .strength-2 span {
+          background-color: orange;
+          width: 50%;
+        }
+        .strength-3 span {
+          background-color: yellowgreen;
+          width: 75%;
+        }
+        .strength-4 span {
+          background-color: green;
+          width: 100%;
+        }
+    </style>
     {% if jinja_message == "changed_password" %}
     <div class="uk-position-top-left uk-alert-success" uk-alert>
         <a class="uk-alert-close" uk-close></a>
@@ -49,7 +95,7 @@
     {% block content %}
         <h2>Involve User Accounts</h2>
         {% if accounts %}
-        <ul><table class="uk-table uk-table-hover uk-table-divider" style="width:100%"><tr><td>Username</td><td>Password</td><td>Acount type<a class="uk-badge" href="/help#account_types">?</a></td></tr>
+        <ul><table class="uk-table uk-table-hover uk-table-divider" style="width:100%"><tr><td>Username</td><td>Password Hash</td><td>Acount type<a class="uk-badge" href="/help#account_types">?</a></td></tr>
             {% for account in accounts %}
             <tr id="id_{{account[0]}}"><td><form method="post" action="/admin"><button class="uk-button uk-button-danger" id="delete_user_{{account[0]}}" type="submit" value="delete_user_{{account[0]}}" name="delete_user_{{account[0]}}">Delete {{account[0]}}</button><label for="delete_user_{{account[0]}}">{{account[0]}}</label></form></td><td>{{account[1]}}</td><td>{{account[2]}}</td></tr>
             {% endfor %}
@@ -75,7 +121,10 @@
     <h2>Create New User</h2>
     <form action="" method = "POST">
         <p>Username <input class="uk-input" type = "text" name = "username" /></p>
-        <p>Password <input class="uk-input" type = "password" name = "password" /></p>
+        <p>Password <input class="uk-input" id="password-input" name="password-input" type = "password" name = "password" /></p>
+
+        <div id="password-strength"><span></span></div><br>
+
         <select class="uk-select" name="type" id="type">
             <option value="admin">Admin</option>
             <option value="viewer">Viewer</option>
@@ -86,7 +135,10 @@
 
     <h2>Change account password</h2>
     <form method="post">
-        <p>New password: <input class="uk-input" type = "text" name = "new_password" /></p>
+        <p>New password: <input id="password-input2" name="password-input2" class="uk-input" type = "password"/></p>
+
+        <div id="password-strength2"><span></span></div><br>
+
         <select class="uk-select" name="user_to_change" id="user_to_change">
 
             {% for user in users %}
@@ -103,5 +155,26 @@
     <p>{{l}}</p>
     {% endfor %}
     </div>
+
+    <script>
+        const pwd = document.getElementById("password-input");
+        const pwdStrength = document.getElementById("password-strength");
+        
+        pwd.addEventListener("input", function () {
+          const pwdVal = pwd.value;
+          let result = zxcvbn(pwdVal);  
+          pwdStrength.className = "strength-" + result.score;  
+        });
+
+
+        const pwd2 = document.getElementById("password-input2");
+        const pwdStrength2 = document.getElementById("password-strength2");
+        
+        pwd2.addEventListener("input", function () {
+          const pwdVal2 = pwd2.value;
+          let result2 = zxcvbn(pwdVal2);  
+          pwdStrength2.className = "strength-" + result2.score;  
+        });
+    </script>
 </body>
 </html> 

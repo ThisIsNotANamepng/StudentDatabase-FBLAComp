@@ -1,15 +1,18 @@
 from flask import Flask, render_template, session, request, redirect, url_for, send_from_directory
 import sqlite3 
-from werkzeug.security import generate_password_hash, check_password_hash
+#from werkzeug.security import generate_password_hash, check_password_hash
 import random
 import itertools
 import datetime 
 import time
 import os
+from flask_bcrypt import Bcrypt
+import hashlib
 
 #  python3.11 -m venv fbla
 #  source env/bin/activate
 app = Flask(__name__, static_folder='static')
+bcrypt = Bcrypt(app)
 
 app.secret_key = b'm#HS3Zy57d$^&fvNqPNj$sga7QJ^*fd66d!TjT6Kzr'
 def log(to_log):
@@ -142,65 +145,48 @@ def type_attendance(type):
   #Returns a list of attendance for a type
   connection = sqlite3.connect("database.db")
   cursor = connection.cursor()
-
   type=type.lower().capitalize()
   a=(cursor.execute("SELECT event FROM event_list WHERE type = ?", (type,)).fetchall())
-
   i=0
   while (i<len(a)):
     a[i]=a[i][0]
     i+=1
-
   counts=[]
   for i in a:
     counts.append(cursor.execute("SELECT COUNT(ID) FROM '"+i+"' ;").fetchone()[0])
-
   connection.close()
-
   return(counts)
 def total_type_attendance(type):
   #Returns a total of attendance for a type
   connection = sqlite3.connect("database.db")
   cursor = connection.cursor()
-
   type=type.lower()
   a=(cursor.execute("SELECT event FROM event_list WHERE type = ?", (type,)).fetchall())
-
-
   i=0
   while (i<len(a)):
     a[i]=a[i][0]
     i+=1
-
   counts=0
   for i in a:
     counts+=(cursor.execute("SELECT COUNT(ID) FROM '"+i+"' ;").fetchone()[0])
-
   connection.close()
-
   return(counts)
 def average_type_attendance(type):
   #Returns a list of attendance for a type
   connection = sqlite3.connect("database.db")
   cursor = connection.cursor()
-
   type=type.lower().capitalize()
   a=(cursor.execute("SELECT event FROM event_list WHERE type = ?", (type,)).fetchall())
   if a==[]:
     return(0)
-
-
   v=0
   while (v<len(a)):
     a[v]=a[v][0]
     v+=1
-
   counts=0
   for i in a:
     counts+=(cursor.execute("SELECT COUNT(ID) FROM '"+i+"' ;").fetchone()[0])
-
   connection.close()
-
   return(counts/v)
 def types_events(type):
   #Returns a list of events which are a type
@@ -343,8 +329,6 @@ def favicon():
 def index():
   #Redirects to user's correct page
   if 'type' in session:
-    print("type found")
-    print(session['type'])
     if (session['type'] == "admin"):
       return redirect(url_for('admin'))
     elif (session['type'] == "viewer"):
@@ -405,7 +389,9 @@ def login():
     connection.close()
     
     #If the password in the database matched the one requested
-    if saved_hash == password:
+    submittted_password_hash=(hashlib.sha256(bytes(password, 'utf-8')).hexdigest())
+
+    if saved_hash == submittted_password_hash:
       session['username'] = username
       log(username+" logged in")
       session['password'] = password
@@ -492,7 +478,8 @@ def admin():
     if request.form.get('username') != None:
       #Create new user
       newuser_username = request.form['username']
-      newuser_password = request.form['password']
+      newuser_password = request.form['password-input']
+      newuser_password = hashlib.sha256(bytes(newuser_password, 'utf-8')).hexdigest()
       newuser_type = request.form['type']
       log(newuser_username+" was created")
       connection = sqlite3.connect("database.db")
@@ -740,10 +727,8 @@ def upload():
 
   #If there really is an id in the request
   if id != "None":
-
     connection = sqlite3.connect("database.db")
     cursor = connection.cursor()
-
     #Insert the ID into the active event
     cursor.execute("insert into "+active_event()+" values(?);", (id,))
     #Give student a point

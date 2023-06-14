@@ -1,0 +1,22 @@
+Make cli mangment tools
+	(Maybe just alias commands to run a python file)
+	- Change passwords
+	- Start/Stop server
+
+Put into container (advertise docker)
+
+Add students into database
+
+Add students into past events
+
+Add config to add domain name or hostname
+
+Backup
+	- Configuration options to backup to remote server or attached physical device at a scheduled time or event
+	- Way to restore backup
+
+Spiel
+	- Containers can be hosted on site or cloud
+
+
+

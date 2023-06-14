@@ -129,3 +129,31 @@
 2023-04-17 11:55:54.910335 - Rediercted to error page
 2023-04-17 11:56:33.202700 - comp logged in
 2023-04-17 12:03:16.244416 - comp was deleted
+2023-06-13 17:43:53.396605 - it@oasd.org logged in
+2023-06-13 17:43:53.396683 - it@oasd.org logged in as admin
+2023-06-13 19:09:46.800964 - testuser was created
+2023-06-13 19:11:39.095627 - testuser was deleted
+2023-06-13 19:28:24.978465 - it@oasd.org logged in
+2023-06-13 19:28:24.978578 - it@oasd.org logged in as admin
+2023-06-13 19:28:39.797838 - testuser was created
+2023-06-13 19:31:11.338631 - it@oasd.org logged in
+2023-06-13 19:31:11.338757 - it@oasd.org logged in as admin
+2023-06-13 19:31:14.508436 - testuser was deleted
+2023-06-13 19:31:24.744319 - testuser was created
+2023-06-13 19:37:09.911185 - it@oasd.org logged in
+2023-06-13 19:37:09.911257 - it@oasd.org logged in as admin
+2023-06-13 19:37:11.654950 - testuser was deleted
+2023-06-13 19:37:18.327280 - testuser was created
+2023-06-13 20:18:53.047575 - it@oasd.org logged in
+2023-06-13 20:18:53.047633 - it@oasd.org logged in as admin
+2023-06-13 20:19:01.426135 - Stadium-Computer was deleted
+2023-06-13 20:19:02.344489 - principle@oasd.org was deleted
+2023-06-13 20:19:03.204172 - testuser was deleted
+2023-06-13 20:19:13.044431 - it@oasd.org was created
+2023-06-13 20:19:17.762936 - it@oasd.org was deleted
+2023-06-13 20:19:17.774545 - it@oasd.org was deleted
+2023-06-13 20:19:26.424319 - it@oasd.org was created
+2023-06-13 20:19:38.287623 - jasoncurtis was created
+2023-06-13 20:19:40.206715 - jasoncurtis was deleted
+2023-06-13 20:19:48.320296 - jasoncurtis was created
+2023-06-13 20:20:10.897934 - StadiumLaptop1 was created
