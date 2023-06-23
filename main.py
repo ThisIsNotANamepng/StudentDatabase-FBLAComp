@@ -6,13 +6,13 @@ import itertools
 import datetime 
 import time
 import os
-from flask_bcrypt import Bcrypt
 import hashlib
 
-#  python3.11 -m venv fbla
-#  source env/bin/activate
+
+#os.system('source fbla/bin/activate')
+#Write starting port and ip 
+
 app = Flask(__name__, static_folder='static')
-bcrypt = Bcrypt(app)
 
 app.secret_key = b'm#HS3Zy57d$^&fvNqPNj$sga7QJ^*fd66d!TjT6Kzr'
 def log(to_log):
@@ -343,6 +343,10 @@ def index():
 @app.errorhandler(404)
 def not_found(l):
   return render_template("404.html")
+
+@app.route('/diagnostics')
+def dignostics():
+  return("Ok")
 
 @app.route('/error')
 def error():
@@ -748,5 +752,7 @@ def logout():
 
   #Take you back to start
   return redirect(url_for('index'))
+
+
 
 app.run(host='0.0.0.0', port=5005)

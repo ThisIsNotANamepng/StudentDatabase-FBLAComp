@@ -1,12 +1,15 @@
-Make cli mangment tools
+Make cli management tools
 	(Maybe just alias commands to run a python file)
 	- Change passwords
 	- Start/Stop server
+		- Writes to a file the ip and port
+	- Start server on specific ip and port (test if port and ip are open before starting)
 	- Diagnostics
+		- Reads the started file for the port and ip
 		- Ping each page
 		- Open and close database, create and delete event/user, ensure db isn't locked
 		- 
-	- Backup
+	- Backup/Restore
 	- Rescue? - Starts server without the database, adds extra options to recover from a database failure
 
 Put into container (advertise docker)
@@ -15,11 +18,9 @@ Add students into database
 
 Add students into past events
 
-Add 2fa
-
 Backup
+	- rsync provides dynamic backup, use threading to start
+	- Have option in admin page to add multiple backup locations and methods (allow usb)
+	- Make restore utility
 
-Salt hashes?
-
-
-
+Salt hashes? - Need to be accessed from function outside of flask, needs to be a system function which returns the salt so attackers which have database don't have access
