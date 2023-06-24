@@ -2,7 +2,7 @@ import subprocess
 import time
 
 print("Starting server...")
-process = subprocess.Popen(['nohup', 'fbla/bin/python3', 'main.py'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+process = subprocess.Popen(['nohup', 'fbla/bin/python3', 'main.py'])
 
 time.sleep(4)
 f=open("ip.txt", "r")
