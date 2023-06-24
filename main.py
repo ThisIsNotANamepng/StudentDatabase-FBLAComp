@@ -6,12 +6,14 @@ import datetime
 import time
 import os
 import hashlib
-
+import urllib
+import socket
 
 #os.system('source fbla/bin/activate')
 #Write starting port and ip 
 
-app = Flask(__name__, static_folder='static')
+
+app = Flask(__name__)
 
 app.secret_key = b'm#HS3Zy57d$^&fvNqPNj$sga7QJ^*fd66d!TjT6Kzr'
 def log(to_log):
@@ -754,4 +756,7 @@ def logout():
 
 
 
-app.run(host='0.0.0.0', port=5005)
+
+if __name__ == '__main__':
+  os.system("echo "+str(socket.gethostbyname(socket.gethostname()))+" > ip.txt")
+  app.run(host='0.0.0.0', port=5006)

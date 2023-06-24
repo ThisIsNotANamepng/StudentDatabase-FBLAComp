@@ -14,4 +14,4 @@ RUN apt install rsync -y
 
 WORKDIR /
 
-ENTRYPOINT ["bash"]
+ENTRYPOINT ["python3", "/fbla/startserver.py"]
