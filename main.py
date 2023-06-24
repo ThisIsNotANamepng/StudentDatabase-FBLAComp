@@ -1,6 +1,5 @@
 from flask import Flask, render_template, session, request, redirect, url_for, send_from_directory
 import sqlite3 
-#from werkzeug.security import generate_password_hash, check_password_hash
 import random
 import itertools
 import datetime 
