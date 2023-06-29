@@ -20,4 +20,4 @@ RUN echo "alias involve-start='python3 /fbla/startserver.py'" >> ~/.bashrc
 RUN echo "alias involve-stop='python3 /fbla/stopserver.py'" >> ~/.bashrc
 RUN echo "alias involve-diagnostics='python3 /fbla/diagnostics.py'" >> ~/.bashrc
 
-ENTRYPOINT ["python3", "/fbla/startserver.py"]
+ENTRYPOINT ["python3", "/fbla/main.py"]

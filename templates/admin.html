@@ -70,6 +70,16 @@
         <a class="uk-alert-close" uk-close></a>
         <p>Succesfully reset all students.</p>
     </div>
+    {% elif jinja_message == "added_backup" %}
+    <div class="uk-position-top-left uk-alert-success" uk-alert>
+        <a class="uk-alert-close" uk-close></a>
+        <p>Succesfully added {{jinja_message_2}} as a backup location.</p>
+    </div>
+    {% elif jinja_message == "deleted_backup" %}
+    <div class="uk-position-top-left uk-alert-success" uk-alert>
+        <a class="uk-alert-close" uk-close></a>
+        <p>Succesfully deleted {{jinja_message_2}} as a backup location.</p>
+    </div>
     {% elif jinja_message == "created_account" %}
     <div class="uk-position-top-left uk-alert-success" uk-alert>
     <a class="uk-alert-close" uk-close></a>
@@ -86,6 +96,8 @@
         <a style="background-color: #669BBC;" class="uk-button uk-button-primary" href="/logout">Log out</a>
         <a style="background-color: #669BBC;" class="uk-button uk-button-primary" href="/winners">Winners</a>
         <a style="background-color: #669BBC;" class="uk-button uk-button-primary" href="/report">Report</a>
+        <a style="background-color: #669BBC;" class="uk-button uk-button-primary" href="/report">Events</a>
+
         <a style="background-color: #669BBC;" class="uk-button uk-button-primary" href="/scan">Scan</a>
     </div>
 
@@ -97,7 +109,7 @@
         {% if accounts %}
         <ul><table class="uk-table uk-table-hover uk-table-divider" style="width:100%"><tr><td>Username</td><td>Password Hash</td><td>Acount type<a class="uk-badge" href="/help#account_types">?</a></td></tr>
             {% for account in accounts %}
-            <tr id="id_{{account[0]}}"><td><form method="post" action="/admin"><button class="uk-button uk-button-danger" id="delete_user_{{account[0]}}" type="submit" value="delete_user_{{account[0]}}" name="delete_user_{{account[0]}}">Delete {{account[0]}}</button><label for="delete_user_{{account[0]}}">{{account[0]}}</label></form></td><td>{{account[1]}}</td><td>{{account[2]}}</td></tr>
+            <tr id="id_{{account[0]}}"><td><form method="post" action="/admin"><button class="uk-button uk-button-danger" id="delete_user_{{account[0]}}" type="submit" value="delete_user_{{account[0]}}" name="delete_user_{{account[0]}}">Delete {{account[0]}}</button><label for="delete_user_{{account[0]}}"> {{account[0]}}</label></form></td><td>{{account[1]}}</td><td>{{account[2]}}</td></tr>
             {% endfor %}
         </table></ul>
         {% endif %}
@@ -149,6 +161,36 @@
 
     </form>
 
+    <!---Backups config--->
+    <h2>Backup</h2>
+
+    <h3>Add a backup location</h3>
+
+    <form action="" method = "POST">
+      <p>Backup locations must be added in the format of user@remoteipaddress:/path/to/destination</p>
+      <p>Location <input class="uk-input" type = "text" name = "add_backup_location" /></p>
+      <p>Password <input class="uk-input" id="add_backup" name="add_backup_password" type = "password"/></p>
+
+      <p><input class="uk-button uk-button-default" type = "submit" value = "Submit" /></p>
+    </form>
+
+
+    <div class="uk-container">
+      {% block backupss %}
+          {% if backups %}
+          <h3>Current backup locations</h3>
+          <ul><table class="uk-table uk-table-hover uk-table-divider" style="width:100%"><tr><td>Location</td></tr>
+              {% for backup in backups %}
+              <tr id="id_{{backup[0]}}"><td><form method="post" action="/admin"><button class="uk-button uk-button-danger" id="delete_single_backup_{{backup[0]}}" type="submit" value="{{backup[0]}}" name="delete_single_backup">Delete {{backup[0]}}</button><label for="delete_single_backup_{{backup[0]}}"> {{backup[0]}}</label></form></td></tr>
+              {% endfor %}
+          </table></ul>
+          {% endif %}
+      {% endblock %}
+    </div>
+
+
+
+    <!--Log-->
     <h2>Log</h2>
 
     {% for l in log %}

@@ -1,12 +1,109 @@
-nohup: ignoring input
- * Serving Flask app 'main'
- * Debug mode: off
-[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
- * Running on all addresses (0.0.0.0)
- * Running on http://127.0.0.1:5005
- * Running on http://10.0.1.118:5005
-[33mPress CTRL+C to quit[0m
-10.0.1.118 - - [17/Jun/2023 11:20:50] "GET /admin HTTP/1.1" 200 -
 
-2023-06-18 14:27:26.818051 - it@oasd.org logged in
-2023-06-18 14:27:26.818250 - it@oasd.org logged in as admin
+2023-06-26 21:11:10.430216 - Started server
+2023-06-26 21:19:34.516525 - fbla nationala event was created
+2023-06-26 21:19:37.125541 - 06-26-2023-1 was changed to the active event
+2023-06-26 21:20:29.318622 - StadiumLaptop1 logged in
+2023-06-26 21:30:53.937821 - Started server
+2023-06-26 21:31:32.350801 - Started server
+2023-06-26 21:37:49.134043 - Started server
+2023-06-26 21:38:14.177139 - a was added to backup locations
+2023-06-26 21:38:29.846381 - Started server
+2023-06-26 21:38:31.948307 - a was added to backup locations
+2023-06-26 21:38:42.023242 - a was added to backup locations
+2023-06-26 21:39:42.100188 - Started server
+2023-06-26 21:42:55.955065 - Started server
+2023-06-26 21:46:37.442670 - Started server
+2023-06-26 21:47:44.422003 - Started server
+2023-06-26 21:48:29.825545 - Started server
+2023-06-26 21:49:44.835005 - Started server
+2023-06-26 21:50:03.658720 - Started server
+2023-06-26 21:52:22.075169 - Started server
+2023-06-26 21:52:43.104977 - Started server
+2023-06-26 21:54:03.241107 - Started server
+2023-06-26 21:54:06.466043 - a was added to backup locations
+2023-06-26 21:55:34.724945 - Started server
+2023-06-26 21:56:14.992502 - Started server
+2023-06-26 21:57:16.277104 - Started server
+2023-06-26 21:59:36.010252 - a was added to backup locations
+2023-06-26 22:01:04.065310 - Started server
+2023-06-26 22:01:18.850236 - a was added to backup locations
+2023-06-26 22:01:33.268834 - Started server
+2023-06-26 22:01:35.008355 - a was added to backup locations
+2023-06-26 22:02:18.712644 - Started server
+2023-06-26 22:02:20.661275 - a was added to backup locations
+2023-06-26 22:02:45.954565 - Started server
+2023-06-26 22:02:47.804034 - a was added to backup locations
+2023-06-26 22:03:51.357632 - Started server
+2023-06-26 22:03:53.892417 - a was added to backup locations
+2023-06-26 22:04:00.508272 - Started server
+2023-06-26 22:04:33.782593 - Started server
+2023-06-26 22:05:23.523846 - Started server
+2023-06-26 22:07:59.365389 - Started server
+2023-06-26 22:08:48.879733 - Started server
+2023-06-26 22:09:03.521114 - Started server
+2023-06-26 22:09:16.517015 - Started server
+2023-06-26 22:09:27.770909 - Started server
+2023-06-26 22:10:13.066627 - Started server
+2023-06-26 22:10:43.793587 - Started server
+2023-06-26 22:10:46.089966 - a was created
+2023-06-26 22:11:01.571696 - a was deleted
+2023-06-26 22:11:46.157646 - All student points were reset to zero
+2023-06-26 22:11:51.180588 - it@oasd.org's password was changed
+2023-06-26 22:11:55.085555 - a was deleted from backup locations
+2023-06-26 22:12:14.882876 - 06-26-2023-1 was deleted
+2023-06-26 22:12:30.291457 - computer1 was created
+2023-06-26 22:12:32.996658 - computer1 was deleted
+2023-06-26 22:13:02.821514 - it@oasd.org's password was changed
+2023-06-26 22:14:10.429275 - it@oasd.org's password was changed
+2023-06-26 22:14:20.046970 - a was created
+2023-06-26 22:14:31.141117 - Started server
+2023-06-26 22:14:39.664939 - b was created
+2023-06-26 22:14:44.573748 - b's password was changed
+2023-06-26 22:15:22.478752 - Started server
+2023-06-26 22:15:24.678816 - b was deleted
+2023-06-26 22:15:25.438289 - a was deleted
+2023-06-26 22:15:32.123975 - it@oasd.org's password was changed
+2023-06-26 22:17:10.219502 - it@oasd.org's password was changed
+2023-06-26 22:17:22.693473 - Started server
+2023-06-26 22:17:29.277571 - it@oasd.org's password was changed
+2023-06-26 22:17:37.386162 - it@oasd.org's password was changed
+2023-06-26 22:17:40.931146 - it@oasd.org's password was changed
+2023-06-26 22:17:50.978520 - it@oasd.org's password was changed
+2023-06-26 22:17:56.770305 - it@oasd.org's password was changed
+2023-06-26 22:18:51.987460 - 04-16-2023-9 was changed to the active event
+2023-06-27 21:20:40.306002 - Started server
+2023-06-27 21:22:31.692703 - it@oasd.org logged in
+2023-06-27 21:22:31.692780 - it@oasd.org logged in as admin
+2023-06-27 21:28:03.806282 - jasoncurtis logged in
+2023-06-27 21:33:36.256055 - computer1 was created
+2023-06-27 21:33:45.327286 - computer1 logged in
+2023-06-27 21:34:15.930691 - fbla event was created
+2023-06-27 21:34:19.870347 - 06-27-2023-1 was changed to the active event
+2023-06-27 21:36:37.060978 - computer1 was deleted
+2023-06-27 21:37:01.630352 - StadiumLaptop1 was deleted
+2023-06-27 21:48:29.530821 - 06-27-2023-1 was deleted
+2023-06-27 21:49:19.850636 - fbla natioanls event was created
+2023-06-27 21:49:23.747046 - 04-16-2023-2 was changed to the active event
+2023-06-27 21:49:34.669411 - 06-27-2023-1 was changed to the active event
+2023-06-27 21:50:06.543830 - computer1 was created
+2023-06-27 21:50:14.668486 - computer1 logged in
+2023-06-27 21:56:11.837665 - Started server
+2023-06-27 21:56:57.009810 - it@oasd.org logged in
+2023-06-27 21:56:57.009872 - it@oasd.org logged in as admin
+2023-06-27 22:04:11.709455 - Started server
+2023-06-27 22:04:20.981385 - computer1 was deleted
+2023-06-28 07:37:22.190932 - Started server
+2023-06-28 07:42:27.061967 - 06-27-2023-1 was deleted
+2023-06-28 07:42:45.075136 - computer1 was created
+2023-06-28 07:42:55.343368 - computer1 logged in
+2023-06-28 07:42:55.343526 - computer1 logged in as admin
+2023-06-28 07:43:00.355260 - computer1 was deleted
+2023-06-28 07:43:12.180856 - computer1 was created
+2023-06-28 07:43:19.919268 - computer1 logged in
+2023-06-28 07:43:37.372059 - computer1 was deleted
+2023-06-28 07:43:43.997307 - compu was created
+2023-06-28 07:44:20.371123 - Started server
+2023-06-28 08:01:19.523701 - 04-16-2023-10 was changed to the active event
+2023-06-28 08:03:04.047798 - Started server
+2023-06-28 08:04:55.553606 - 04-16-2023-6 was changed to the active event
+2023-06-28 08:06:07.767445 - 04-16-2023-12 was changed to the active event

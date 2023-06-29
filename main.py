@@ -9,9 +9,6 @@ import hashlib
 import urllib
 import socket
 
-#os.system('source fbla/bin/activate')
-#Write starting port and ip 
-
 
 app = Flask(__name__)
 
@@ -23,6 +20,7 @@ def log(to_log):
   f=open("log.txt", "a")
   f.write(to_log)
   f.close()
+log("Started server")
 def does_event_exist(id):
   #Returns True or False whether id exists in event_list
   connection = sqlite3.connect("database.db")
@@ -463,12 +461,39 @@ def admin():
 
   if request.method == 'POST':
     usernames=all_usernames()
+    if "add_backup_location" in request.form:
+      #Adding a backup location
+      print("Adding backup location")
+      log(request.form.get('add_backup_location')+" was added to backup locations")
+      os.system("echo '"+request.form.get('add_backup_location')+"' > passwordfiles/"+request.form.get('add_backup_password'))
+      connection = sqlite3.connect("database.db")
+      cursor = connection.cursor()
+      cursor.execute("INSERT INTO backups(location) VALUES('"+request.form.get('add_backup_location')+"');")
+      connection.commit()
+      connection.close()
+      admin_toggle_message=True
+      admin_jinja_message="added_backup"
+      admin_jinja_message_2=request.form.get("add_backup_location")
+    if "delete_single_backup" in request.form:
+      #Deleting a backup location
+      print("Deleting backup location")
+      location = request.form['delete_single_backup']
+      log(location+" was deleted from backup locations")
+      connection = sqlite3.connect("database.db")
+      cursor = connection.cursor()
+      cursor.execute("DELETE FROM backups WHERE location = ?;", (location,))
+      connection.commit()
+      connection.close()
+      os.system("rm passwordfiles/"+location)
+      admin_toggle_message=True
+      admin_jinja_message="deleted_backup"
+      admin_jinja_message_2=location
     if request.form.get("user_to_change") != None:
       #Change password for user
       log(request.form.get('user_to_change')+"'s password was changed")
       connection = sqlite3.connect("database.db")
       cursor = connection.cursor()
-      cursor.execute("UPDATE auth SET hash = ? WHERE username='"+request.form.get('user_to_change')+"';", (request.form.get("new_password"),))
+      cursor.execute("UPDATE auth SET hash = ? WHERE username='"+request.form.get('user_to_change')+"';", (hashlib.sha256(bytes(request.form.get("password-input2"), 'utf-8')).hexdigest(),))
       connection.commit()
       connection.close()
       admin_toggle_message=True
@@ -480,7 +505,7 @@ def admin():
       reset_students()
       admin_toggle_message=True
       admin_jinja_message="reset_students"
-    if request.form.get('username') != None:
+    if "password-input" in request.form:
       #Create new user
       newuser_username = request.form['username']
       newuser_password = request.form['password-input']
@@ -513,7 +538,15 @@ def admin():
   llog=f.readlines()
   f.close()
 
-  return render_template('admin.html', accounts=accounts, users=all_usernames(), log=llog, jinja_message=admin_jinja_message, jinja_message_2=admin_jinja_message_2)
+
+  connection = sqlite3.connect("database.db")
+  cursor = connection.cursor()
+  cursor.execute('SELECT * FROM backups')
+  backups = cursor.fetchall()
+  connection.close()
+
+
+  return render_template('admin.html', accounts=accounts, users=all_usernames(), log=llog, jinja_message=admin_jinja_message, jinja_message_2=admin_jinja_message_2, backups=backups)
 
 global events_jinja_message
 global events_jinja_message_2
